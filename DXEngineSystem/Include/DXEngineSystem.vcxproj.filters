@@ -1,0 +1,366 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="01.EngineSystem">
+      <UniqueIdentifier>{7babd23e-a1a8-4e5f-9cc4-f82719cd3273}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.EngineSystem\01.Global">
+      <UniqueIdentifier>{8b2788a8-d7f9-440b-a35f-ecfb9690ad12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.EngineSystem\03.EngineResource">
+      <UniqueIdentifier>{203c8991-781c-46df-b4bd-f19d7682c453}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.EngineSystem\02.Engine">
+      <UniqueIdentifier>{43fe6d83-2520-488e-9409-c9a2a88fe9c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.EngineSystem\02.Engine\01.Utils">
+      <UniqueIdentifier>{e686e9fe-8e7e-424c-ba16-427f09fa284c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.EngineSystem\02.Engine\02.System">
+      <UniqueIdentifier>{1d5d7739-81c3-42dd-9f29-e308481f3225}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.EngineSystem\03.EngineResource\01.Operator">
+      <UniqueIdentifier>{97c9c16a-3629-4087-8c19-c642846a988f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.EngineSystem\03.EngineResource\03.GameUI">
+      <UniqueIdentifier>{23e57dcf-c136-4fb6-a056-bfceece73cfd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.EngineSystem\03.EngineResource\03.GameUI\01.SubUI">
+      <UniqueIdentifier>{b96f3fce-512d-44b2-80de-15582c7e896d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.EngineSystem\03.EngineResource\05.Scene">
+      <UniqueIdentifier>{9b8dd363-f571-4ad8-a2a4-c7c3e4f4b0a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.EngineSystem\03.EngineResource\04.Asset">
+      <UniqueIdentifier>{689c6e10-3efe-4d32-bd72-febd11d54f1a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.EngineSystem\03.EngineResource\05.Scene\01.GameScene">
+      <UniqueIdentifier>{a77f5299-7bf4-4d46-9356-6a7734e203f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.EngineSystem\02.Engine\01.Utils\01.IO">
+      <UniqueIdentifier>{e12d1e75-e77e-422f-8cd9-a7d5a878a23a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.EngineSystem\02.Engine\02.System\03.RenderSystem">
+      <UniqueIdentifier>{eff957d1-9542-45e5-b828-9e9ba22d68ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.EngineSystem\02.Engine\02.System\01.SystemUtils">
+      <UniqueIdentifier>{b7a07481-229c-4376-813d-a7a2d757436a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.EngineSystem\02.Engine\02.System\02.Core">
+      <UniqueIdentifier>{4694d93d-4bb4-4346-80e5-12e71f68181c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.EngineSystem\03.EngineResource\01.Operator\01.Type">
+      <UniqueIdentifier>{9e20a024-05a0-47db-a9ae-1a14f572b7a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.EngineSystem\03.EngineResource\01.Operator\01.Type\07.UIShape">
+      <UniqueIdentifier>{47787306-9dde-4b3b-8acb-201d55290a3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.EngineSystem\03.EngineResource\01.Operator\01.Type\00.Transform">
+      <UniqueIdentifier>{c403f54c-1d2c-44bb-9367-f68b8b89f487}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.EngineSystem\03.EngineResource\01.Operator\01.Type\01.Shader">
+      <UniqueIdentifier>{6387c1c0-fd4c-4947-bfcc-8f6eea55ff1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.EngineSystem\03.EngineResource\01.Operator\01.Type\01.Shader\01.HLSL">
+      <UniqueIdentifier>{02378603-00e4-4d55-81b2-06f9af8f845a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.EngineSystem\03.EngineResource\01.Operator\01.Type\02.Material">
+      <UniqueIdentifier>{07942df6-fdd3-425f-9fa5-1d946578a002}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.EngineSystem\03.EngineResource\01.Operator\01.Type\02.PolySurface">
+      <UniqueIdentifier>{c50e3e5a-0739-4625-b489-be518b514856}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.EngineSystem\03.EngineResource\01.Operator\01.Type\03.Resource">
+      <UniqueIdentifier>{af782b64-837f-4fb8-8d72-881761df73bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.EngineSystem\03.EngineResource\01.Operator\01.Type\04.LightShape">
+      <UniqueIdentifier>{980e2bc3-818e-476b-8376-610636533348}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.EngineSystem\03.EngineResource\01.Operator\01.Type\05.Camera">
+      <UniqueIdentifier>{0c0b4178-4f0c-4d9c-8f82-8823f4b5373c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.EngineSystem\03.EngineResource\01.Operator\02.Manager">
+      <UniqueIdentifier>{4c84e1ea-aeeb-4528-b899-e6e171419477}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.EngineSystem\03.EngineResource\02.Object">
+      <UniqueIdentifier>{bdd0a336-3ba0-425a-ad4d-571440d6c789}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.EngineSystem\03.EngineResource\02.Object\01.Type">
+      <UniqueIdentifier>{63e1396c-eac6-49c7-9525-784b06c34c8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.EngineSystem\03.EngineResource\02.Object\01.Type\01.Camera">
+      <UniqueIdentifier>{13cbaa89-e677-4d9f-b985-60c0e52865ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.EngineSystem\03.EngineResource\02.Object\01.Type\02.Light">
+      <UniqueIdentifier>{2244b185-cc72-4f32-a7da-f8725fd21f13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.EngineSystem\03.EngineResource\02.Object\01.Type\03.Geometry">
+      <UniqueIdentifier>{1fa609bf-fa57-4ce4-bf02-9e5cbfa49ebb}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>01.EngineSystem\01.Global</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine.h">
+      <Filter>01.EngineSystem\02.Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="d3dx12.h">
+      <Filter>01.EngineSystem\01.Global</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineTimer.h">
+      <Filter>01.EngineSystem\02.Engine\01.Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineInput.h">
+      <Filter>01.EngineSystem\02.Engine\01.Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>01.EngineSystem\03.EngineResource\05.Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>01.EngineSystem\03.EngineResource\05.Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="PolySurface.h">
+      <Filter>01.EngineSystem\03.EngineResource\01.Operator\01.Type\02.PolySurface</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>01.EngineSystem\03.EngineResource\01.Operator\01.Type\01.Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineUtils.h">
+      <Filter>01.EngineSystem\02.Engine\01.Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineMath.h">
+      <Filter>01.EngineSystem\02.Engine\01.Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>01.EngineSystem\03.EngineResource\01.Operator\01.Type\02.Material</Filter>
+    </ClInclude>
+    <ClInclude Include="GPUBufferUtils.h">
+      <Filter>01.EngineSystem\02.Engine\02.System\01.SystemUtils</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineSystem.h">
+      <Filter>01.EngineSystem\02.Engine\02.System</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandObjects.h">
+      <Filter>01.EngineSystem\02.Engine\02.System\02.Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Device.h">
+      <Filter>01.EngineSystem\02.Engine\02.System\02.Core</Filter>
+    </ClInclude>
+    <ClInclude Include="SwapChain.h">
+      <Filter>01.EngineSystem\02.Engine\02.System\02.Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>01.EngineSystem\03.EngineResource\01.Operator\01.Type\03.Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="EnginePch.h">
+      <Filter>01.EngineSystem\02.Engine\01.Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="LightShape.h">
+      <Filter>01.EngineSystem\03.EngineResource\01.Operator\01.Type\04.LightShape</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraShape.h">
+      <Filter>01.EngineSystem\03.EngineResource\01.Operator\01.Type\05.Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>01.EngineSystem\03.EngineResource\01.Operator\01.Type\00.Transform</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h">
+      <Filter>01.EngineSystem\03.EngineResource\01.Operator\02.Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>01.EngineSystem\03.EngineResource\02.Object</Filter>
+    </ClInclude>
+    <ClInclude Include="UIShape.h">
+      <Filter>01.EngineSystem\03.EngineResource\01.Operator\01.Type\07.UIShape</Filter>
+    </ClInclude>
+    <ClInclude Include="GameUI.h">
+      <Filter>01.EngineSystem\03.EngineResource\03.GameUI</Filter>
+    </ClInclude>
+    <ClInclude Include="UIManager.h">
+      <Filter>01.EngineSystem\03.EngineResource\01.Operator\02.Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="ProgressiveBar.h">
+      <Filter>01.EngineSystem\03.EngineResource\03.GameUI\01.SubUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ChannelBox.h">
+      <Filter>01.EngineSystem\03.EngineResource\03.GameUI\01.SubUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>01.EngineSystem\03.EngineResource\02.Object\01.Type\01.Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>01.EngineSystem\03.EngineResource\02.Object\01.Type\02.Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry.h">
+      <Filter>01.EngineSystem\03.EngineResource\02.Object\01.Type\03.Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="LightGroup.h">
+      <Filter>01.EngineSystem\03.EngineResource\02.Object\01.Type\02.Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene_Animation.h">
+      <Filter>01.EngineSystem\03.EngineResource\05.Scene\01.GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineObjIO.h">
+      <Filter>01.EngineSystem\02.Engine\01.Utils\01.IO</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineFbxIO.h">
+      <Filter>01.EngineSystem\02.Engine\01.Utils\01.IO</Filter>
+    </ClInclude>
+    <ClInclude Include="MultiRenderTarget.h">
+      <Filter>01.EngineSystem\02.Engine\02.System\03.RenderSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="RootSignature.h">
+      <Filter>01.EngineSystem\02.Engine\02.System\03.RenderSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="SRVDescriptorHeap.h">
+      <Filter>01.EngineSystem\02.Engine\02.System\03.RenderSystem</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp">
+      <Filter>01.EngineSystem\01.Global</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine.cpp">
+      <Filter>01.EngineSystem\02.Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="EngineTimer.cpp">
+      <Filter>01.EngineSystem\02.Engine\01.Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="EngineInput.cpp">
+      <Filter>01.EngineSystem\02.Engine\01.Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>01.EngineSystem\03.EngineResource\05.Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>01.EngineSystem\03.EngineResource\05.Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="PolySurface.cpp">
+      <Filter>01.EngineSystem\03.EngineResource\01.Operator\01.Type\02.PolySurface</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>01.EngineSystem\03.EngineResource\01.Operator\01.Type\01.Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="EngineUtils.cpp">
+      <Filter>01.EngineSystem\02.Engine\01.Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="EngineMath.cpp">
+      <Filter>01.EngineSystem\02.Engine\01.Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>01.EngineSystem\03.EngineResource\01.Operator\01.Type\02.Material</Filter>
+    </ClCompile>
+    <ClCompile Include="EngineSystem.cpp">
+      <Filter>01.EngineSystem\02.Engine\02.System</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandObjects.cpp">
+      <Filter>01.EngineSystem\02.Engine\02.System\02.Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Device.cpp">
+      <Filter>01.EngineSystem\02.Engine\02.System\02.Core</Filter>
+    </ClCompile>
+    <ClCompile Include="SwapChain.cpp">
+      <Filter>01.EngineSystem\02.Engine\02.System\02.Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>01.EngineSystem\03.EngineResource\01.Operator\01.Type\03.Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="EnginePch.cpp">
+      <Filter>01.EngineSystem\02.Engine\01.Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="LightShape.cpp">
+      <Filter>01.EngineSystem\03.EngineResource\01.Operator\01.Type\04.LightShape</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraShape.cpp">
+      <Filter>01.EngineSystem\03.EngineResource\01.Operator\01.Type\05.Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Transform.cpp">
+      <Filter>01.EngineSystem\03.EngineResource\01.Operator\01.Type\00.Transform</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>01.EngineSystem\03.EngineResource\01.Operator\02.Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>01.EngineSystem\03.EngineResource\02.Object</Filter>
+    </ClCompile>
+    <ClCompile Include="UIShape.cpp">
+      <Filter>01.EngineSystem\03.EngineResource\01.Operator\01.Type\07.UIShape</Filter>
+    </ClCompile>
+    <ClCompile Include="GameUI.cpp">
+      <Filter>01.EngineSystem\03.EngineResource\03.GameUI</Filter>
+    </ClCompile>
+    <ClCompile Include="UIManager.cpp">
+      <Filter>01.EngineSystem\03.EngineResource\01.Operator\02.Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="ProgressiveBar.cpp">
+      <Filter>01.EngineSystem\03.EngineResource\03.GameUI\01.SubUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ChannelBox.cpp">
+      <Filter>01.EngineSystem\03.EngineResource\03.GameUI\01.SubUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>01.EngineSystem\03.EngineResource\02.Object\01.Type\01.Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>01.EngineSystem\03.EngineResource\02.Object\01.Type\02.Light</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry.cpp">
+      <Filter>01.EngineSystem\03.EngineResource\02.Object\01.Type\03.Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="LightGroup.cpp">
+      <Filter>01.EngineSystem\03.EngineResource\02.Object\01.Type\02.Light</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene_Animation.cpp">
+      <Filter>01.EngineSystem\03.EngineResource\05.Scene\01.GameScene</Filter>
+    </ClCompile>
+    <ClCompile Include="EngineObjIO.cpp">
+      <Filter>01.EngineSystem\02.Engine\01.Utils\01.IO</Filter>
+    </ClCompile>
+    <ClCompile Include="EngineFbxIO.cpp">
+      <Filter>01.EngineSystem\02.Engine\01.Utils\01.IO</Filter>
+    </ClCompile>
+    <ClCompile Include="MultiRenderTarget.cpp">
+      <Filter>01.EngineSystem\02.Engine\02.System\03.RenderSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="RootSignature.cpp">
+      <Filter>01.EngineSystem\02.Engine\02.System\03.RenderSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="SRVDescriptorHeap.cpp">
+      <Filter>01.EngineSystem\02.Engine\02.System\03.RenderSystem</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\DXEngineResource\Shader\ShaderUtils.hlsli">
+      <Filter>01.EngineSystem\03.EngineResource\01.Operator\01.Type\01.Shader\01.HLSL</Filter>
+    </None>
+    <None Include="..\..\DXEngineResource\Shader\LightingUtils.hlsli">
+      <Filter>01.EngineSystem\03.EngineResource\01.Operator\01.Type\01.Shader\01.HLSL</Filter>
+    </None>
+    <None Include="..\..\DXEngineResource\Shader\GameUI.hlsli">
+      <Filter>01.EngineSystem\03.EngineResource\01.Operator\01.Type\01.Shader\01.HLSL</Filter>
+    </None>
+    <None Include="..\..\DXEngineResource\Shader\ParticleShader.hlsli">
+      <Filter>01.EngineSystem\03.EngineResource\01.Operator\01.Type\01.Shader\01.HLSL</Filter>
+    </None>
+    <None Include="..\..\DXEngineResource\Shader\DeferredLighting.hlsli">
+      <Filter>01.EngineSystem\03.EngineResource\01.Operator\01.Type\01.Shader\01.HLSL</Filter>
+    </None>
+    <None Include="..\..\DXEngineResource\Shader\DeferredShader.hlsli">
+      <Filter>01.EngineSystem\03.EngineResource\01.Operator\01.Type\01.Shader\01.HLSL</Filter>
+    </None>
+    <None Include="..\..\DXEngineResource\Shader\ForwardLighting.hlsli">
+      <Filter>01.EngineSystem\03.EngineResource\01.Operator\01.Type\01.Shader\01.HLSL</Filter>
+    </None>
+    <None Include="..\..\DXEngineResource\Shader\ForwardShader.hlsli">
+      <Filter>01.EngineSystem\03.EngineResource\01.Operator\01.Type\01.Shader\01.HLSL</Filter>
+    </None>
+    <None Include="..\..\DXEngineResource\Shader\SkyBox.hlsli">
+      <Filter>01.EngineSystem\03.EngineResource\01.Operator\01.Type\01.Shader\01.HLSL</Filter>
+    </None>
+  </ItemGroup>
+</Project>
