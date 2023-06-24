@@ -9,8 +9,8 @@ public:
 
 public:
 	void Create(ComPtr<ID3D12Device> device, DXGI_FORMAT format, uint32 width, uint32 height,
-				const D3D12_HEAP_PROPERTIES& heapProperty, D3D12_HEAP_FLAGS heapFlags,
-				D3D12_RESOURCE_FLAGS resourceFlags, XMFLOAT4 clearColor = XMFLOAT4());
+		const D3D12_HEAP_PROPERTIES& heapProperty, D3D12_HEAP_FLAGS heapFlags,
+		D3D12_RESOURCE_FLAGS resourceFlags, XMFLOAT4 clearColor = XMFLOAT4());
 
 	void CreateSRV(ComPtr<ID3D12Device> device);
 	void CreateRTV(ComPtr<ID3D12Device> device);
@@ -19,11 +19,14 @@ public:
 	void LoadGPUResource(ComPtr<ID3D12Device> device, ComPtr<ID3D12Resource> resource);
 
 	void LoadTextureFile(const wstring& filePath, ComPtr<ID3D12Device> device,
-						ComPtr<ID3D12GraphicsCommandList> cmdList);
+		ComPtr<ID3D12GraphicsCommandList> cmdList);
 
 public:
 	void	SetName(const string& name);
 	string	GetName();
+
+	float	GetTextureWidth();
+	float	GetTextureHeight();
 
 public:
 	ComPtr<ID3D12Resource>			GetResource();

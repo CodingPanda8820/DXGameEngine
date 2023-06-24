@@ -13,9 +13,14 @@ public:
 	~LightGroup();
 
 public:
-	virtual void Init() override;
-	virtual void Update() override;
-	virtual void Render() override;
+	virtual void Init();
+	virtual void Update();
+	virtual void Render(OBJECT_RENDER_TYPE type = OBJECT_RENDER_TYPE::OBJECT);
+	virtual void PostUpdate();
+
+private:
+	void RenderObject();
+	void RenderShadow();
 
 public:
 	void AddLight(const string& name, LIGHT_TYPE type);
@@ -26,8 +31,8 @@ public:
 	unordered_map<string, shared_ptr<Light>>	GetLights();
 
 private:
-	virtual void UpdateAttributes() override;
-	virtual void RenderAttributes() override;
+	void UpdateAttributes();
+	void RenderAttributes();
 
 private:
 	unique_ptr<UploadBuffer<CBLightGroup>>	 m_attributes;

@@ -24,12 +24,12 @@ public:
 
 	void SetDiffuse(const XMFLOAT4& rgba);
 	void SetDiffuse(float r, float g, float b, float a);
-	void SetSpecular(const XMFLOAT4& rgba);
-	void SetSpecular(float r, float g, float b, float a);
+	void SetSpecular(const XMFLOAT3& rgb);
+	void SetSpecular(float r, float g, float b);
+	void SetShininess(float value);
 	void SetAmbient(const XMFLOAT4& rgba);
 	void SetAmbient(float r, float g, float b, float a);
-	void SetShininess(const XMFLOAT4& rgba);
-	void SetShininess(float r, float g, float b, float a);
+
 	void SetTexture(TREGISTER_TYPE type, shared_ptr<Texture> texture);
 	void SetTexture(uint8 registerID, shared_ptr<Texture> texture);
 	void SetUserDataInt(uint8 index, uint32 value);
@@ -39,9 +39,9 @@ public:
 	string		GetName();
 
 	XMFLOAT4	GetDiffuse();
-	XMFLOAT4	GetSpecular();
+	XMFLOAT3	GetSpecular();
+	float		GetShininess();
 	XMFLOAT4	GetAmbient();
-	XMFLOAT4	GetShininess();
 
 	uint32		GetUserDataInt(uint8 index);
 	float		GetUserDataFloat(uint8 index);
@@ -57,15 +57,18 @@ private:
 	string		m_name;
 
 	XMFLOAT4	m_diffuse;
-	XMFLOAT4	m_specular;
+	XMFLOAT3	m_specular;
+	float		m_shininess;
 	XMFLOAT4	m_ambient;
-	XMFLOAT4	m_shininess;
+
+	shared_ptr<Shader>								m_shader;
 
 	array<shared_ptr<Texture>, TEXTURE_PARM_COUNT>  m_textures;
 	array<int32, TEXTURE_PARM_COUNT>				m_texturesOn;
 
-	int32	m_userDataInt[MAX_USER_DATA_INT]	 = { 0 };
-	float	m_userDataFloat[MAX_USER_DATA_FLOAT] = { 0.0f };
+	int32		m_userDataInt[MAX_USER_DATA_INT] = { 0 };
+	float		m_userDataFloat[MAX_USER_DATA_FLOAT] = { 0.0f };
+	XMFLOAT4X4	m_userDataMatrix[MAX_USER_DATA_MATRIX] = {};
 
 private:
 	ComPtr<ID3D12DescriptorHeap> m_descriptorHeap;

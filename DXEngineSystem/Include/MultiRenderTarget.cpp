@@ -2,7 +2,7 @@
 #include "MultiRenderTarget.h"
 
 void MultiRenderTarget::Create(ComPtr<ID3D12Device> device, RENDER_TARGET_TYPE type,
-								vector<RenderTarget>& renderTargets, shared_ptr<Texture> depthStencilTexture)
+	vector<RenderTarget>& renderTargets, shared_ptr<Texture> depthStencilTexture)
 {
 	m_type = type;
 	m_rts = renderTargets;
@@ -19,7 +19,7 @@ void MultiRenderTarget::Create(ComPtr<ID3D12Device> device, RENDER_TARGET_TYPE t
 
 	m_rtvHeapSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	m_rtvCpuHandle = m_rtvHeap->GetCPUDescriptorHandleForHeapStart();
-	
+
 	for (uint32 i = 0; i < m_rtsCount; i++)
 	{
 		uint32 destSize = 1;
@@ -30,18 +30,35 @@ void MultiRenderTarget::Create(ComPtr<ID3D12Device> device, RENDER_TARGET_TYPE t
 
 		device->CopyDescriptors(1, &destCpuHandle, &destSize, 1, &srcCpuHandle, &srcSize, D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	}
-	
+
 	m_dsvCpuHandle = m_ds->GetDSVDescriptorHeap()->GetCPUDescriptorHandleForHeapStart();
 }
 
 void MultiRenderTarget::OMSetRenderTarget(ComPtr<ID3D12GraphicsCommandList> cmdList, uint32 count, uint32 offset)
 {
+	float width = m_rts[0].Texture->GetTextureWidth();
+	float height = m_rts[0].Texture->GetTextureHeight();
+
+	D3D12_VIEWPORT  viewport = { 0.0f, 0.0f, width, height, 0.0f, 1.0f };
+	D3D12_RECT		scissorRect = { 0, 0, static_cast<int>(width), static_cast<int>(height) };
+
+	cmdList->RSSetViewports(1, &viewport);
+	cmdList->RSSetScissorRects(1, &scissorRect);
+
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvCpuHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(m_rtvCpuHandle, offset * m_rtvHeapSize);
 	cmdList->OMSetRenderTargets(count, &rtvCpuHandle, FALSE, &m_dsvCpuHandle);
 }
 
 void MultiRenderTarget::OMSetRenderTargets(ComPtr<ID3D12GraphicsCommandList> cmdList)
 {
+	float width = m_rts[0].Texture->GetTextureWidth();
+	float height = m_rts[0].Texture->GetTextureHeight();
+
+	D3D12_VIEWPORT  viewport = { 0.0f, 0.0f, width, height, 0.0f, 1.0f };
+	D3D12_RECT		scissorRect = { 0, 0, static_cast<int>(width), static_cast<int>(height) };
+
+	cmdList->RSSetViewports(1, &viewport);
+	cmdList->RSSetScissorRects(1, &scissorRect);
 	cmdList->OMSetRenderTargets(m_rtsCount, &m_rtvCpuHandle, TRUE, &m_dsvCpuHandle);
 }
 

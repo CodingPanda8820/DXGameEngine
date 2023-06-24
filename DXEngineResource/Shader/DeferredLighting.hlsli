@@ -36,11 +36,11 @@ static const float2 BasePosition[4] =
 
 VertexOut VS_DirectionalLight(uint VertexID : SV_VertexID)
 {
-	VertexOut vout  = (VertexOut)0;
-	vout.position   = float4(BasePosition[VertexID].xy, 0.0f, 1.0f);
+	VertexOut vout = (VertexOut)0;
+	vout.position = float4(BasePosition[VertexID].xy, 0.0f, 1.0f);
 
 	//	Flip UV.y
-	vout.uv	  = mul(BasePosition[VertexID].xy, 0.5) + 0.5;
+	vout.uv = mul(BasePosition[VertexID].xy, 0.5) + 0.5;
 	vout.uv.y = abs(vout.uv.y - 1.0f);
 
 	return vout;
@@ -48,34 +48,59 @@ VertexOut VS_DirectionalLight(uint VertexID : SV_VertexID)
 
 PixelOut PS_DirectionalLight(VertexOut pin)
 {
-	float3 positionV = gDiffuseTexture2D.Sample(gsamLinearClamp, pin.uv).xyz;
-	if (positionV.z <= 0.f)
-		clip(-1);
+	Material material = (Material)0;
+	material.Position = gShininessTexture2D.Sample(gsamLinearClamp, pin.uv).xyz;
+	material.Diffuse = gDiffuseTexture2D.Sample(gsamLinearClamp, pin.uv).xyz;
+	material.Specular = gDiffuseTexture2D.Sample(gsamLinearClamp, pin.uv).w;
+	material.Shininess = gSpecularTexture2D.Sample(gsamLinearClamp, pin.uv).w;
+	material.Normal = gSpecularTexture2D.Sample(gsamLinearClamp, pin.uv).xyz;
 
-	float3 normalV = gNormalTexture2D.Sample(gsamLinearClamp, pin.uv).xyz;
+	int		lightIndex = gUserDataInt_1;
+	float3	toEye = normalize(gEyePosWorld - material.Position);
 
-	Material mat		= (Material)0;
-	mat.DiffuseColor	= positionV;
-	mat.Normal			= normalV;
-
-	int		lightIndex	= gUserDataInt_0;
-	float3	toEye		= normalize(gEyePosWorld - gLights[lightIndex].Position);
-
-	LightColor color = ComputeDirectionalLight(gLights[lightIndex], mat, toEye);
+	LightColor color = ComputeDirectionalLight(gLights[lightIndex], material, toEye);
 
 	PixelOut pout = (PixelOut)0;
-	pout.diffuse  = float4(color.diffuse,  1.0f);
+	pout.diffuse = float4(color.diffuse, 1.0f);
+	pout.specular = float4(color.specular, 1.0f);
+
+	return pout;
+}
+
+VertexOut VS_PointLight(uint VertexID : SV_VertexID)
+{
+	VertexOut vout = (VertexOut)0;
+	vout.position = float4(BasePosition[VertexID].xy, 0.0f, 1.0f);
+
+	//	Flip UV.y
+	vout.uv = mul(BasePosition[VertexID].xy, 0.5) + 0.5;
+	vout.uv.y = abs(vout.uv.y - 1.0f);
+
+	return vout;
+}
+
+PixelOut PS_PointLight(VertexOut pin)
+{
+	Material material = (Material)0;
+	material.Position = gShininessTexture2D.Sample(gsamLinearClamp, pin.uv).xyz;
+	material.Diffuse = gDiffuseTexture2D.Sample(gsamLinearClamp, pin.uv).xyz;
+	material.Specular = gDiffuseTexture2D.Sample(gsamLinearClamp, pin.uv).w;
+	material.Shininess = gSpecularTexture2D.Sample(gsamLinearClamp, pin.uv).w;
+	material.Normal = gSpecularTexture2D.Sample(gsamLinearClamp, pin.uv).xyz;
+
+	int		lightIndex = gUserDataInt_0;
+	float3	toEye = normalize(gEyePosWorld - material.Position);
+
+	LightColor color = ComputePointLight(gLights[lightIndex], material, toEye);
+
+	PixelOut pout = (PixelOut)0;
+	pout.diffuse = float4(color.diffuse, 1.0f);
 	pout.specular = float4(color.specular, 1.0f);
 
 	return pout;
 }
 
 //	Ambient Light
-//  Input
-//	Texture[0] : GBuffer::Diffuse
-//	Texture[1] : Light::Diffuse
-//	Texture[2] : Light::Specular
-//	Output	   : float4 DeferredOutput
 VertexOut VS_AmbientLight(uint VertexID : SV_VertexID)
 {
 	VertexOut vout = (VertexOut)0;
@@ -90,15 +115,17 @@ VertexOut VS_AmbientLight(uint VertexID : SV_VertexID)
 
 float4 PS_AmbientLight(VertexOut pin) : SV_Target
 {
-	float4 ambient = float4(gLights[gUserDataInt_0].Strength, 0.0f);
+	float4 strength = float4(gLights[gUserDataInt_0].Strength, 0.0f);
+	float4 diffuseAlbedo = float4(gDiffuseTexture2D.Sample(gsamPointWrap, pin.uv).xyz, 1.0f);
 
-	float4 color		 = gDiffuseTexture2D.Sample(gsamPointWrap, pin.uv);
-	float4 lightColor	 = gSpecularTexture2D.Sample(gsamPointWrap, pin.uv);
-	float4 lightSpecular = gAmbientTexture2D.Sample(gsamPointWrap, pin.uv);
+	float4 ambientLight = diffuseAlbedo * strength;
+	float4 diffuseLight = gSpecularTexture2D.Sample(gsamPointWrap, pin.uv);
+	float4 SpecularLight = gShininessTexture2D.Sample(gsamPointWrap, pin.uv);
 
-	if (lightColor.x == 0.0f && lightColor.y == 0.0f && lightColor.z == 0.0f)
-		clip(-1);	
+	float4 finalColor = ambientLight + diffuseLight + SpecularLight;
 
-	//return (color * lightColor) + lightSpecular + ambient;
-	return (color * ambient) + lightColor;
+	if (finalColor.x == 0.0f && finalColor.y == 0.0f && finalColor.z == 0.0f)
+		clip(-1);
+
+	return finalColor;
 }

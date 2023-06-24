@@ -10,31 +10,29 @@ public:
 
 public:
 	virtual void Init(const string& name, LIGHT_TYPE type = LIGHT_TYPE::AMBIENT);
-	virtual void Update();
-	virtual void Render();
+	virtual void Update() override;
+	virtual void Render(OBJECT_RENDER_TYPE type = OBJECT_RENDER_TYPE::OBJECT);
 	virtual void PostUpdate();
+
+private:
+	void RenderObject();
+	void RenderShadow();
 
 public:
 	void SetName(const string& name);
-	void SetType(LIGHT_TYPE type);
-	void SetMaterial(const string& name);
-	void SetVolumeShape(const string& name);
+	void SetLightType(LIGHT_TYPE type);
+	void SetLightIndex(uint32 index);
 
 	void SetStrength(XMFLOAT3& value);
 	void SetStrength(float x, float y, float z);
-	void SetFalloffStart(float value); 
-	void SetFalloffEnd(float value); 
-	void SetSpotPower(float value); 
-
-	void SetPosition(XMFLOAT3& value); 
-	void SetPosition(float x, float y, float z); 
-	void SetDirection(XMFLOAT3& value); 
-	void SetDirection(float x, float y, float z); 
+	void SetFalloffStart(float value);
+	void SetFalloffEnd(float value);
+	void SetSpotPower(float value);
 
 public:
 	string		GetName();
-	LIGHT_TYPE	GetType();
-
+	LIGHT_TYPE	GetLightType();
+	uint32		GetLightIndex();
 	XMFLOAT3	GetStrength();
 	XMFLOAT3	GetPosition();
 	XMFLOAT3	GetDirection();
@@ -48,17 +46,18 @@ public:
 	shared_ptr<PolySurface> GetVolumeShape();
 
 private:
-	virtual void UpdateAttributes() override;
-	virtual void RenderAttributes() override;
+	void UpdateAttributes();
+	void RenderAttributes();
 
 private:
 	unique_ptr<UploadBuffer<CBLight>>  m_attributes;
 
 private:
 	string								m_name;
-	LIGHT_TYPE							m_type;
-	shared_ptr<Material>				m_material;
+
+	LIGHT_TYPE							m_lightType;
+	uint32								m_lightIndex;
 	shared_ptr<LightShape>				m_lightShape;
-	shared_ptr<PolySurface>				m_volumeShape;
+	shared_ptr<PolySurface>				m_lightPoint;
 };
 

@@ -54,8 +54,8 @@ void EngineSystem::Update(ID3D12PipelineState* pPSO)
 
 void EngineSystem::Render(D3D12_VIEWPORT viewport, D3D12_RECT scissorRect)
 {
-	SetViewport(viewport);
-	SetScissorRect(scissorRect);
+	//SetViewport(viewport);
+	//SetScissorRect(scissorRect);
 }
 
 void EngineSystem::PostUpdate()
@@ -102,9 +102,9 @@ void EngineSystem::CommitSRVDescriptorHeaps()
 void EngineSystem::CreateDeferredRenderTargets(WindowInfo wndInfo)
 {
 	//	DepthStencil
-	ResourceManager::GetInst()->NewTexture("DRT_DepthStencil", GetDevice(), DXGI_FORMAT_D24_UNORM_S8_UINT,
-					wndInfo.Width, wndInfo.Height, CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
-					D3D12_HEAP_FLAG_NONE, D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL);
+	ResourceManager::GetInst()->NewTexture("DRT_DepthStencil", GetDevice(), DEPTH_STENCIL_FORMAT,
+		wndInfo.Width, wndInfo.Height, CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+		D3D12_HEAP_FLAG_NONE, D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL);
 
 	shared_ptr<Texture> dsTexture = ResourceManager::GetInst()->FindTexture("DRT_DepthStencil");
 
@@ -126,24 +126,46 @@ void EngineSystem::CreateDeferredRenderTargets(WindowInfo wndInfo)
 		m_multiRenderTargets[static_cast<uint8>(RENDER_TARGET_TYPE::SWAP_CHAIN)]->Create(GetDevice(), RENDER_TARGET_TYPE::SWAP_CHAIN, rtSwapChain, dsTexture);
 	}
 
+	//	Shadow
+	{
+		const float shadowQuality = 4;
+
+		vector<RenderTarget> rtShadow(RENDER_TARGET_SHADOW_COUNT);
+		ResourceManager::GetInst()->NewTexture("DRT_Shadow", GetDevice(), DXGI_FORMAT_R32_FLOAT,
+			wndInfo.Width * shadowQuality, wndInfo.Height * shadowQuality,
+			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+			D3D12_HEAP_FLAG_NONE, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
+		rtShadow[0].Texture = ResourceManager::GetInst()->FindTexture("DRT_Shadow");
+
+		ResourceManager::GetInst()->NewTexture("DRT_ShadowDepth", GetDevice(), DEPTH_STENCIL_FORMAT,
+			wndInfo.Width * shadowQuality, wndInfo.Height * shadowQuality,
+			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+			D3D12_HEAP_FLAG_NONE, D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL);
+
+		shared_ptr<Texture> shadowDepth = ResourceManager::GetInst()->FindTexture("DRT_ShadowDepth");
+
+		m_multiRenderTargets[static_cast<uint8>(RENDER_TARGET_TYPE::SHADOW)] = make_shared<MultiRenderTarget>();
+		m_multiRenderTargets[static_cast<uint8>(RENDER_TARGET_TYPE::SHADOW)]->Create(GetDevice(), RENDER_TARGET_TYPE::SHADOW, rtShadow, shadowDepth);
+	}
+
 	//	GBuffer
 	{
 		vector<RenderTarget> rtGBuffer(RENDER_TARGET_GBUFFER_COUNT);
 
 		ResourceManager::GetInst()->NewTexture("DRT_Position", GetDevice(), DXGI_FORMAT_R32G32B32A32_FLOAT,
-						wndInfo.Width, wndInfo.Height, CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
-						D3D12_HEAP_FLAG_NONE, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
+			wndInfo.Width, wndInfo.Height, CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+			D3D12_HEAP_FLAG_NONE, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
 		rtGBuffer[0].Texture = ResourceManager::GetInst()->FindTexture("DRT_Position");
 
-		ResourceManager::GetInst()->NewTexture("DRT_Normal", GetDevice(), DXGI_FORMAT_R32G32B32A32_FLOAT,
-						wndInfo.Width, wndInfo.Height, CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
-						D3D12_HEAP_FLAG_NONE, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
-		rtGBuffer[1].Texture = ResourceManager::GetInst()->FindTexture("DRT_Normal");
+		ResourceManager::GetInst()->NewTexture("DRT_DiffuseAndSpecular", GetDevice(), DXGI_FORMAT_R32G32B32A32_FLOAT,
+			wndInfo.Width, wndInfo.Height, CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+			D3D12_HEAP_FLAG_NONE, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
+		rtGBuffer[1].Texture = ResourceManager::GetInst()->FindTexture("DRT_DiffuseAndSpecular");
 
-		ResourceManager::GetInst()->NewTexture("DRT_Diffuse", GetDevice(), DXGI_FORMAT_R8G8B8A8_UNORM,
-						wndInfo.Width, wndInfo.Height, CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
-						D3D12_HEAP_FLAG_NONE, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
-		rtGBuffer[2].Texture = ResourceManager::GetInst()->FindTexture("DRT_Diffuse");
+		ResourceManager::GetInst()->NewTexture("DRT_NormalAndShininess", GetDevice(), DXGI_FORMAT_R32G32B32A32_FLOAT,
+			wndInfo.Width, wndInfo.Height, CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+			D3D12_HEAP_FLAG_NONE, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
+		rtGBuffer[2].Texture = ResourceManager::GetInst()->FindTexture("DRT_NormalAndShininess");
 
 		m_multiRenderTargets[static_cast<uint8>(RENDER_TARGET_TYPE::GBUFFER)] = make_shared<MultiRenderTarget>();
 		m_multiRenderTargets[static_cast<uint8>(RENDER_TARGET_TYPE::GBUFFER)]->Create(GetDevice(), RENDER_TARGET_TYPE::GBUFFER, rtGBuffer, dsTexture);
@@ -154,13 +176,13 @@ void EngineSystem::CreateDeferredRenderTargets(WindowInfo wndInfo)
 		vector<RenderTarget> rtLighting(RENDER_TARGET_LIGHTING_COUNT);
 
 		ResourceManager::GetInst()->NewTexture("DRT_DiffuseLight", GetDevice(), DXGI_FORMAT_R8G8B8A8_UNORM,
-								wndInfo.Width, wndInfo.Height, CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
-								D3D12_HEAP_FLAG_NONE, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
+			wndInfo.Width, wndInfo.Height, CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+			D3D12_HEAP_FLAG_NONE, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
 		rtLighting[0].Texture = ResourceManager::GetInst()->FindTexture("DRT_DiffuseLight");
 
 		ResourceManager::GetInst()->NewTexture("DRT_SpecularLight", GetDevice(), DXGI_FORMAT_R8G8B8A8_UNORM,
-								wndInfo.Width, wndInfo.Height, CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
-								D3D12_HEAP_FLAG_NONE, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
+			wndInfo.Width, wndInfo.Height, CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+			D3D12_HEAP_FLAG_NONE, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
 		rtLighting[1].Texture = ResourceManager::GetInst()->FindTexture("DRT_SpecularLight");
 
 		m_multiRenderTargets[static_cast<uint8>(RENDER_TARGET_TYPE::LIGHTING)] = make_shared<MultiRenderTarget>();

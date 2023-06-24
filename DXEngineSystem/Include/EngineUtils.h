@@ -8,15 +8,15 @@ string  ConvertWStringToString(const wstring& value);
 
 struct WindowInfo
 {
-	HWND	hWnd		= nullptr;
-	float	Width		= 0.0f;
-	float	Height		= 0.0f;
-	bool	WindowMode	= true;
+	HWND	hWnd = nullptr;
+	float	Width = 0.0f;
+	float	Height = 0.0f;
+	bool	WindowMode = true;
 };
 
 struct MultiSampleAntiAliasing
 {
-	bool State	 = false;
+	bool State = false;
 	UINT Quality = 0;
 };
 
@@ -25,20 +25,20 @@ struct CBGameObject
 	XMFLOAT4X4 World = EngineMath::Identity4x4();
 };
 
-#define MAX_USER_DATA_INT		4
+#define MAX_USER_DATA_INT			4
 #define MAX_USER_DATA_FLOAT		4
+#define MAX_USER_DATA_MATRIX	4
 struct CBMaterial
 {
-	XMFLOAT4 Diffuse	= { 1.0f, 1.0f, 1.0f, 1.0f };
-	XMFLOAT4 Specular	= { 0.01f, 0.01f, 0.01f, 1.0f };
-	XMFLOAT4 Ambient	= { 0.0f, 0.0f, 0.0f, 0.0f };
-	XMFLOAT4 Shininess  = { 0.01f, 0.01f, 0.01f, 1.0f };
+	XMFLOAT4 Diffuse = { 1.0f, 1.0f, 1.0f, 1.0f };
+	XMFLOAT3 Specular = { 0.01f, 0.01f, 0.01f };
+	float	 Shininess = 1.0f;
+	XMFLOAT4 Ambient = { 0.0f, 0.0f, 0.0f, 0.0f };
 
-	int32	 DiffuseTexture2D   = 0;
-	int32	 SpecularTexture2D  = 0;
-	int32	 AmbientTexture2D   = 0;
+	int32	 DiffuseTexture2D = 0;
+	int32	 SpecularTexture2D = 0;
 	int32	 ShininessTexture2D = 0;
-	int32	 NormalTexture2D	= 0;
+	int32	 NormalTexture2D = 0;
 
 	int32	UserDataInt_0 = 0;
 	int32	UserDataInt_1 = 0;
@@ -49,16 +49,21 @@ struct CBMaterial
 	float	UserDataFloat_1 = 0;
 	float	UserDataFloat_2 = 0;
 	float	UserDataFloat_3 = 0;
+
+	XMFLOAT4X4 UserDataMatrix_0 = EngineMath::Identity4x4();
+	XMFLOAT4X4 UserDataMatrix_1 = EngineMath::Identity4x4();
+	XMFLOAT4X4 UserDataMatrix_2 = EngineMath::Identity4x4();
+	XMFLOAT4X4 UserDataMatrix_3 = EngineMath::Identity4x4();
 };
 
 struct CBLight
 {
-	XMFLOAT3	Strength	 = { 0.5f, 0.5f, 0.5f };
+	XMFLOAT3	Strength = { 0.5f, 0.5f, 0.5f };
 	float		FalloffStart = 1.0f;
-	XMFLOAT3	Direction	 = { 0.0f, -1.0f, 0.0f };
-	float		FalloffEnd	 = 10.0f;
-	XMFLOAT3	Position	 = { 0.0f, 0.0f, 0.0f };
-	float		SpotPower	 = 64.0f;
+	XMFLOAT3	Direction = { 0.0f, -1.0f, 0.0f };
+	float		FalloffEnd = 10.0f;
+	XMFLOAT3	Position = { 0.0f, 0.0f, 0.0f };
+	float		SpotPower = 64.0f;
 };
 
 #define MAX_LIGHT_COUNT 64
@@ -69,9 +74,12 @@ struct CBLightGroup
 
 struct CBCamera
 {
-	XMFLOAT4X4 View				= EngineMath::Identity4x4();
-	XMFLOAT4X4 Projection		= EngineMath::Identity4x4();
-	XMFLOAT4X4 ViewProjection	= EngineMath::Identity4x4();
+	XMFLOAT4X4 View = EngineMath::Identity4x4();
+	XMFLOAT4X4 ViewInv = EngineMath::Identity4x4();
+	XMFLOAT4X4 Projection = EngineMath::Identity4x4();
+	XMFLOAT4X4 ProjectionInv = EngineMath::Identity4x4();
+	XMFLOAT4X4 ViewProjection = EngineMath::Identity4x4();
+	XMFLOAT4X4 ViewProjectionInv = EngineMath::Identity4x4();
 
 	XMFLOAT3 EyePosition = { 0.0f, 0.0f, 0.0f };
 	float	 EyePositionPad = 0.0f;
@@ -127,10 +135,10 @@ struct Vertex
 		return true;
 	}
 
-	XMFLOAT3 Position	= { 0.0f, 0.0f, 0.0f };
-	XMFLOAT3 Normal		= { 0.0f, 1.0f, 0.0f };
-	XMFLOAT3 TangentU	= { 1.0f, 0.0f, 0.0f };
-	XMFLOAT2 UV			= { 0.0f, 0.0f };
+	XMFLOAT3 Position = { 0.0f, 0.0f, 0.0f };
+	XMFLOAT3 Normal = { 0.0f, 1.0f, 0.0f };
+	XMFLOAT3 TangentU = { 1.0f, 0.0f, 0.0f };
+	XMFLOAT2 UV = { 0.0f, 0.0f };
 };
 
 struct PolySurfaceShape
@@ -168,6 +176,12 @@ struct SurfaceMaterialElementInfo
 	string		Name;
 };
 
+enum class PROJECTION_TYPE
+{
+	PERSPECTIVE = 0,
+	ORTHOGONAL,
+};
+
 enum class LIGHT_TYPE : uint8
 {
 	AMBIENT,
@@ -199,7 +213,6 @@ enum class TREGISTER_TYPE : uint8
 {
 	DIFFUSE_TEXTURE2D,
 	SPECULAR_TEXTURE2D,
-	AMBIENT_TEXTURE2D,
 	SHININESS_TEXTURE2D,
 	NORMAL_TEXTURE2D,
 	COUNT,

@@ -1,11 +1,13 @@
 #include "pch.h"
 #include "Light.h"
+#include "ResourceManager.h"
 
 Light::Light()
 {
 	m_material = make_shared<Material>();
-	m_lightShape = make_shared<LightShape>();	
-	m_volumeShape = make_shared<PolySurface>();
+	m_lightShape = make_shared<LightShape>();
+	m_lightPoint = make_shared<PolySurface>();
+	m_lightPoint = ResourceManager::GetInst()->FindPolySurface("PLY_LightGeometry");
 }
 
 Light::~Light()
@@ -17,7 +19,7 @@ void Light::Init(const string& name, LIGHT_TYPE type)
 	GameObject::Init();
 
 	SetName(name);
-	SetType(type);
+	SetLightType(type);
 }
 
 void Light::Update()
@@ -25,18 +27,35 @@ void Light::Update()
 	GameObject::Update();
 }
 
-void Light::Render()
+void Light::Render(OBJECT_RENDER_TYPE type)
 {
-	GameObject::Render();
+	GameObject::Render(type);
 
-	GameObject::UpdateAttributes();
-	GameObject::RenderAttributes();
+	switch (type)
+	{
+	case OBJECT_RENDER_TYPE::OBJECT:
+		RenderObject();
+		break;
+	case OBJECT_RENDER_TYPE::SHADOW:
+		RenderShadow();
+		break;
+	default:
+		break;
+	}
+}
 
+void Light::RenderObject()
+{
+	m_material->SetUserDataInt(1, m_lightIndex);
 	m_material->UpdateAttributes();
 	m_material->RenderAttributes();
 
-	m_volumeShape->Update();
-	m_volumeShape->Render();
+	m_lightPoint->Update();
+	m_lightPoint->Render();
+}
+
+void Light::RenderShadow()
+{
 }
 
 void Light::PostUpdate()
@@ -50,37 +69,32 @@ void Light::SetName(const string& name)
 	m_lightShape->SetName(name);
 }
 
-void Light::SetType(LIGHT_TYPE type)
+void Light::SetLightType(LIGHT_TYPE type)
 {
-	m_type = type;
-
-	switch (m_type)
+	m_lightType = type;
+	switch (m_lightType)
 	{
 	case LIGHT_TYPE::AMBIENT:
 	{
 		SetShader("SHD_AmbientLight");
-		SetVolumeShape("EngineWindow");
 		SetMaterial("MAT_AmbientLight");
 		break;
 	}
 	case LIGHT_TYPE::DIRECTIONAL:
 	{
 		SetShader("SHD_DirectionalLight");
-		SetVolumeShape("EngineWindow");
 		SetMaterial("MAT_DirectionalLight");
 		break;
 	}
 	case LIGHT_TYPE::POINT:
 	{
 		SetShader("SHD_SpotLight");
-		SetVolumeShape("Sphere");
 		SetMaterial("MAT_PointLight");
 		break;
 	}
 	case LIGHT_TYPE::SPOT:
 	{
 		SetShader("SHD_PointLight");
-		SetVolumeShape("Sphere");
 		SetMaterial("MAT_SpotLight");
 		break;
 	}
@@ -89,20 +103,9 @@ void Light::SetType(LIGHT_TYPE type)
 	}
 }
 
-void Light::SetMaterial(const string& name)
+void Light::SetLightIndex(uint32 index)
 {
-	if (!m_material)
-		m_material = make_shared<Material>();
-
-	m_material = ResourceManager::GetInst()->FindMaterial(name);
-}
-
-void Light::SetVolumeShape(const string& name)
-{
-	if (!m_volumeShape)
-		m_volumeShape = make_shared<PolySurface>();
-
-	m_volumeShape = ResourceManager::GetInst()->FindPolySurface(name);
+	m_lightIndex = index;
 }
 
 void Light::SetStrength(XMFLOAT3& value)
@@ -130,34 +133,14 @@ void Light::SetSpotPower(float value)
 	m_lightShape->SetSpotPower(value);
 }
 
-void Light::SetPosition(XMFLOAT3& value)
-{
-	m_lightShape->SetPosition(value);
-}
-
-void Light::SetPosition(float x, float y, float z)
-{
-	m_lightShape->SetPosition(x, y, z);
-}
-
-void Light::SetDirection(XMFLOAT3& value)
-{
-	m_lightShape->SetDirection(value);
-}
-
-void Light::SetDirection(float x, float y, float z)
-{
-	m_lightShape->SetDirection(x, y, z);
-}
-
 string Light::GetName()
 {
 	return m_name;
 }
 
-LIGHT_TYPE Light::GetType()
+LIGHT_TYPE Light::GetLightType()
 {
-	return m_type;
+	return m_lightType;
 }
 
 shared_ptr<Material> Light::GetMaterial()
@@ -167,32 +150,12 @@ shared_ptr<Material> Light::GetMaterial()
 
 shared_ptr<PolySurface> Light::GetVolumeShape()
 {
-	return m_volumeShape;
+	return m_lightPoint;
 }
 
-void Light::UpdateAttributes()
+uint32 Light::GetLightIndex()
 {
-	GameObject::UpdateAttributes();
-
-	CBLight attributes;
-	attributes.Strength = GetStrength();
-	attributes.FalloffStart = GetFalloffStart();
-	attributes.Direction = GetDirection();
-	attributes.FalloffEnd = GetFalloffEnd();
-	XMStoreFloat3(&attributes.Position, XMVector3Transform(XMLoadFloat3(&GetPosition()), m_transform->GetWorld()));
-	attributes.SpotPower = GetSpotPower();
-
-	m_attributes->CopyData(0, attributes);
-}
-
-void Light::RenderAttributes()
-{
-	GameObject::RenderAttributes();
-
-	auto buffer = m_attributes->GetUploadBuffer();
-	UINT bufferByteSize = ConvertToMinimumHardwareAllocationByteSize(sizeof(CBLight));
-	D3D12_GPU_VIRTUAL_ADDRESS gpuAddress = buffer->GetGPUVirtualAddress();
-	EngineSystem::GetInst()->GetCmdList()->SetGraphicsRootConstantBufferView(REGISTER_ID(CREGISTER_TYPE::LIGHT), gpuAddress);
+	return m_lightIndex;
 }
 
 XMFLOAT3 Light::GetStrength()
@@ -202,12 +165,12 @@ XMFLOAT3 Light::GetStrength()
 
 XMFLOAT3 Light::GetPosition()
 {
-	return m_lightShape->GetPosition();
+	return m_transform->GetWorldPivotFloat3();
 }
 
 XMFLOAT3 Light::GetDirection()
 {
-	return m_lightShape->GetDirection();
+	return m_transform->GetWorldYawFloat3();
 }
 
 float Light::GetSpotPower()
@@ -228,4 +191,25 @@ float Light::GetFalloffEnd()
 shared_ptr<LightShape> Light::GetLightShape()
 {
 	return m_lightShape;
+}
+
+void Light::UpdateAttributes()
+{
+	CBLight attributes;
+	attributes.Strength = GetStrength();
+	attributes.FalloffStart = GetFalloffStart();
+	attributes.Direction = GetDirection();
+	attributes.FalloffEnd = GetFalloffEnd();
+	attributes.Position = GetPosition();
+	attributes.SpotPower = GetSpotPower();
+
+	m_attributes->CopyData(0, attributes);
+}
+
+void Light::RenderAttributes()
+{
+	auto buffer = m_attributes->GetUploadBuffer();
+	UINT bufferByteSize = ConvertToMinimumHardwareAllocationByteSize(sizeof(CBLight));
+	D3D12_GPU_VIRTUAL_ADDRESS gpuAddress = buffer->GetGPUVirtualAddress();
+	EngineSystem::GetInst()->GetCmdList()->SetGraphicsRootConstantBufferView(REGISTER_ID(CREGISTER_TYPE::LIGHT), gpuAddress);
 }

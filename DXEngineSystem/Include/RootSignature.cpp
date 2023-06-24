@@ -44,13 +44,13 @@ void RootSignature::BuildRootSignature(ComPtr<ID3D12Device> device)
 
 	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc;
 	rootSignatureDesc.Init(_countof(rootParms), rootParms, (UINT)staticSamplers.size(), staticSamplers.data(),
-						D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
 	ComPtr<ID3DBlob> errorBlob = nullptr;
 	ComPtr<ID3DBlob> serializeRootSignature = nullptr;
 
 	HRESULT hr = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1,
-								serializeRootSignature.GetAddressOf(), errorBlob.GetAddressOf());
+		serializeRootSignature.GetAddressOf(), errorBlob.GetAddressOf());
 
 	if (errorBlob != nullptr)
 		OutputDebugStringA((char*)errorBlob->GetBufferPointer());
@@ -59,7 +59,7 @@ void RootSignature::BuildRootSignature(ComPtr<ID3D12Device> device)
 		serializeRootSignature->GetBufferSize(), IID_PPV_ARGS(&m_rootSignature));
 }
 
-array<const CD3DX12_STATIC_SAMPLER_DESC, 6> RootSignature::StaticSamplers()
+array<const CD3DX12_STATIC_SAMPLER_DESC, STATIC_SAMPLER_COUNT> RootSignature::StaticSamplers()
 {
 	const CD3DX12_STATIC_SAMPLER_DESC pointWrap(
 		0,
@@ -111,5 +111,17 @@ array<const CD3DX12_STATIC_SAMPLER_DESC, 6> RootSignature::StaticSamplers()
 		0.0f, 8
 	);
 
-	return { pointWrap, pointClamp, linearWrap, linearClamp, anisotropicWrap, anisotropicClamp };
+	const CD3DX12_STATIC_SAMPLER_DESC shadow(
+		6,
+		D3D12_FILTER_COMPARISON_MIN_MAG_MIP_POINT,
+		D3D12_TEXTURE_ADDRESS_MODE_BORDER,
+		D3D12_TEXTURE_ADDRESS_MODE_BORDER,
+		D3D12_TEXTURE_ADDRESS_MODE_BORDER,
+		0.0f,
+		16,
+		D3D12_COMPARISON_FUNC_LESS_EQUAL,
+		D3D12_STATIC_BORDER_COLOR_OPAQUE_BLACK
+	);
+
+	return { pointWrap, pointClamp, linearWrap, linearClamp, anisotropicWrap, anisotropicClamp, shadow };
 }

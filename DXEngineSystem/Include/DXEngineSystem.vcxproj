@@ -255,6 +255,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\DXEngineResource\Shader\DeferredLighting.hlsli" />
+    <None Include="..\..\DXEngineResource\Shader\DeferredShadow.hlsli" />
     <None Include="..\..\DXEngineResource\Shader\ForwardLighting.hlsli" />
     <None Include="..\..\DXEngineResource\Shader\ForwardShader.hlsli" />
     <None Include="..\..\DXEngineResource\Shader\ParticleShader.hlsli" />

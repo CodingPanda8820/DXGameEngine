@@ -16,7 +16,7 @@ ResourceManager::~ResourceManager()
 
 bool ResourceManager::Init()
 {
-	static float EngineWidth  = EngineSystem::GetInst()->GetWindowInfo().Width;
+	static float EngineWidth = EngineSystem::GetInst()->GetWindowInfo().Width;
 	static float EngineHeight = EngineSystem::GetInst()->GetWindowInfo().Height;
 
 #pragma region Textures
@@ -37,10 +37,10 @@ bool ResourceManager::Init()
 	};
 
 	NewShader("SHD_SurfaceShader");
-	m_shaders["SHD_SurfaceShader"]->AppendInputElement("POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT,	0,  0, 0, 0);
-	m_shaders["SHD_SurfaceShader"]->AppendInputElement("NORMAL",	0, DXGI_FORMAT_R32G32B32_FLOAT,	0, 12, 0, 0);
-	m_shaders["SHD_SurfaceShader"]->AppendInputElement("TANGENT",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 24, 0, 0);
-	m_shaders["SHD_SurfaceShader"]->AppendInputElement("TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT,	0, 36, 0, 0);
+	m_shaders["SHD_SurfaceShader"]->AppendInputElement("POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, 0, 0);
+	m_shaders["SHD_SurfaceShader"]->AppendInputElement("NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, 0, 0);
+	m_shaders["SHD_SurfaceShader"]->AppendInputElement("TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 24, 0, 0);
+	m_shaders["SHD_SurfaceShader"]->AppendInputElement("TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 36, 0, 0);
 	m_shaders["SHD_SurfaceShader"]->LoadShaderByteCode(L"..\\..\\DXEngineResource\\Shader\\DeferredShader.hlsli", "VS_Main", SHADER_CODE_TYPE::VS);
 	m_shaders["SHD_SurfaceShader"]->LoadShaderByteCode(L"..\\..\\DXEngineResource\\Shader\\DeferredShader.hlsli", "PS_Main", SHADER_CODE_TYPE::PS);
 	m_shaders["SHD_SurfaceShader"]->Create("SHD_SurfaceShader", shaderInfo);
@@ -51,10 +51,10 @@ bool ResourceManager::Init()
 	};
 
 	NewShader("SHD_ForwardShader");
-	m_shaders["SHD_ForwardShader"]->AppendInputElement("POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0,  0, 0, 0);
-	m_shaders["SHD_ForwardShader"]->AppendInputElement("NORMAL",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, 0, 0);
-	m_shaders["SHD_ForwardShader"]->AppendInputElement("TANGENT",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 24, 0, 0);
-	m_shaders["SHD_ForwardShader"]->AppendInputElement("TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT,	0, 36, 0, 0);
+	m_shaders["SHD_ForwardShader"]->AppendInputElement("POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, 0, 0);
+	m_shaders["SHD_ForwardShader"]->AppendInputElement("NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, 0, 0);
+	m_shaders["SHD_ForwardShader"]->AppendInputElement("TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 24, 0, 0);
+	m_shaders["SHD_ForwardShader"]->AppendInputElement("TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 36, 0, 0);
 	m_shaders["SHD_ForwardShader"]->LoadShaderByteCode(L"..\\..\\DXEngineResource\\Shader\\ForwardShader.hlsli", "VS_Main", SHADER_CODE_TYPE::VS);
 	m_shaders["SHD_ForwardShader"]->LoadShaderByteCode(L"..\\..\\DXEngineResource\\Shader\\ForwardShader.hlsli", "PS_Main", SHADER_CODE_TYPE::PS);
 	m_shaders["SHD_ForwardShader"]->Create("SHD_ForwardShader", shaderInfo);
@@ -68,40 +68,56 @@ bool ResourceManager::Init()
 	};
 
 	NewShader("SHD_AmbientLight");
-	m_shaders["SHD_AmbientLight"]->AppendInputElement("POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0,  0, 0, 0);
-	m_shaders["SHD_AmbientLight"]->AppendInputElement("NORMAL",		0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, 0, 0);
-	m_shaders["SHD_AmbientLight"]->AppendInputElement("TANGENT",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 24, 0, 0);
-	m_shaders["SHD_AmbientLight"]->AppendInputElement("TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT,	0, 36, 0, 0);
+	m_shaders["SHD_AmbientLight"]->AppendInputElement("POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, 0, 0);
+	m_shaders["SHD_AmbientLight"]->AppendInputElement("NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, 0, 0);
+	m_shaders["SHD_AmbientLight"]->AppendInputElement("TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 24, 0, 0);
+	m_shaders["SHD_AmbientLight"]->AppendInputElement("TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 36, 0, 0);
 	m_shaders["SHD_AmbientLight"]->LoadShaderByteCode(L"..\\..\\DXEngineResource\\Shader\\DeferredLighting.hlsli", "VS_AmbientLight", SHADER_CODE_TYPE::VS);
 	m_shaders["SHD_AmbientLight"]->LoadShaderByteCode(L"..\\..\\DXEngineResource\\Shader\\DeferredLighting.hlsli", "PS_AmbientLight", SHADER_CODE_TYPE::PS);
 	m_shaders["SHD_AmbientLight"]->Create("SHD_AmbientLight", shaderInfo);
 
 	NewShader("SHD_DirectionalLight");
-	m_shaders["SHD_DirectionalLight"]->AppendInputElement("POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0,  0, 0, 0);
-	m_shaders["SHD_DirectionalLight"]->AppendInputElement("NORMAL",		0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, 0, 0);
-	m_shaders["SHD_DirectionalLight"]->AppendInputElement("TANGENT",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 24, 0, 0);
-	m_shaders["SHD_DirectionalLight"]->AppendInputElement("TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT,	0, 36, 0, 0);
+	m_shaders["SHD_DirectionalLight"]->AppendInputElement("POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, 0, 0);
+	m_shaders["SHD_DirectionalLight"]->AppendInputElement("NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, 0, 0);
+	m_shaders["SHD_DirectionalLight"]->AppendInputElement("TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 24, 0, 0);
+	m_shaders["SHD_DirectionalLight"]->AppendInputElement("TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 36, 0, 0);
 	m_shaders["SHD_DirectionalLight"]->LoadShaderByteCode(L"..\\..\\DXEngineResource\\Shader\\DeferredLighting.hlsli", "VS_DirectionalLight", SHADER_CODE_TYPE::VS);
 	m_shaders["SHD_DirectionalLight"]->LoadShaderByteCode(L"..\\..\\DXEngineResource\\Shader\\DeferredLighting.hlsli", "PS_DirectionalLight", SHADER_CODE_TYPE::PS);
 	m_shaders["SHD_DirectionalLight"]->Create("SHD_DirectionalLight", shaderInfo);
 
 	NewShader("SHD_SpotLight");
-	m_shaders["SHD_SpotLight"]->AppendInputElement("POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0,  0, 0, 0);
-	m_shaders["SHD_SpotLight"]->AppendInputElement("NORMAL",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, 0, 0);
-	m_shaders["SHD_SpotLight"]->AppendInputElement("TANGENT",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 24, 0, 0);
-	m_shaders["SHD_SpotLight"]->AppendInputElement("TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT,	0, 36, 0, 0);
+	m_shaders["SHD_SpotLight"]->AppendInputElement("POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, 0, 0);
+	m_shaders["SHD_SpotLight"]->AppendInputElement("NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, 0, 0);
+	m_shaders["SHD_SpotLight"]->AppendInputElement("TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 24, 0, 0);
+	m_shaders["SHD_SpotLight"]->AppendInputElement("TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 36, 0, 0);
 	m_shaders["SHD_SpotLight"]->LoadShaderByteCode(L"..\\..\\DXEngineResource\\Shader\\DeferredLighting.hlsli", "VS_DirectionalLight", SHADER_CODE_TYPE::VS);
 	m_shaders["SHD_SpotLight"]->LoadShaderByteCode(L"..\\..\\DXEngineResource\\Shader\\DeferredLighting.hlsli", "PS_DirectionalLight", SHADER_CODE_TYPE::PS);
 	m_shaders["SHD_SpotLight"]->Create("SHD_SpotLight", shaderInfo);
 
 	NewShader("SHD_PointLight");
-	m_shaders["SHD_PointLight"]->AppendInputElement("POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0,  0, 0, 0);
-	m_shaders["SHD_PointLight"]->AppendInputElement("NORMAL",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, 0, 0);
-	m_shaders["SHD_PointLight"]->AppendInputElement("TANGENT",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 24, 0, 0);
-	m_shaders["SHD_PointLight"]->AppendInputElement("TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT,	0, 36, 0, 0);
+	m_shaders["SHD_PointLight"]->AppendInputElement("POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, 0, 0);
+	m_shaders["SHD_PointLight"]->AppendInputElement("NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, 0, 0);
+	m_shaders["SHD_PointLight"]->AppendInputElement("TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 24, 0, 0);
+	m_shaders["SHD_PointLight"]->AppendInputElement("TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 36, 0, 0);
 	m_shaders["SHD_PointLight"]->LoadShaderByteCode(L"..\\..\\DXEngineResource\\Shader\\DeferredLighting.hlsli", "VS_DirectionalLight", SHADER_CODE_TYPE::VS);
 	m_shaders["SHD_PointLight"]->LoadShaderByteCode(L"..\\..\\DXEngineResource\\Shader\\DeferredLighting.hlsli", "PS_DirectionalLight", SHADER_CODE_TYPE::PS);
 	m_shaders["SHD_PointLight"]->Create("SHD_PointLight", shaderInfo);
+
+	shaderInfo =
+	{
+		SHADER_TYPE::SHADOW,
+		RASTERIZER_TYPE::CULL_BACK,
+		DEPTH_STENCIL_TYPE::LESS,
+	};
+
+	NewShader("SHD_Shadow");
+	m_shaders["SHD_Shadow"]->AppendInputElement("POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, 0, 0);
+	m_shaders["SHD_Shadow"]->AppendInputElement("NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, 0, 0);
+	m_shaders["SHD_Shadow"]->AppendInputElement("TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 24, 0, 0);
+	m_shaders["SHD_Shadow"]->AppendInputElement("TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 36, 0, 0);
+	m_shaders["SHD_Shadow"]->LoadShaderByteCode(L"..\\..\\DXEngineResource\\Shader\\DeferredShadow.hlsli", "VS_Main", SHADER_CODE_TYPE::VS);
+	m_shaders["SHD_Shadow"]->LoadShaderByteCode(L"..\\..\\DXEngineResource\\Shader\\DeferredShadow.hlsli", "PS_Main", SHADER_CODE_TYPE::PS);
+	m_shaders["SHD_Shadow"]->Create("SHD_Shadow", shaderInfo);
 
 	shaderInfo =
 	{
@@ -109,10 +125,10 @@ bool ResourceManager::Init()
 	};
 
 	NewShader("SHD_GameUI");
-	m_shaders["SHD_GameUI"]->AppendInputElement("POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0,  0, 0, 0);
-	m_shaders["SHD_GameUI"]->AppendInputElement("NORMAL",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, 0, 0);
-	m_shaders["SHD_GameUI"]->AppendInputElement("TANGENT",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 24, 0, 0);
-	m_shaders["SHD_GameUI"]->AppendInputElement("TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT,	0, 36, 0, 0);
+	m_shaders["SHD_GameUI"]->AppendInputElement("POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, 0, 0);
+	m_shaders["SHD_GameUI"]->AppendInputElement("NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, 0, 0);
+	m_shaders["SHD_GameUI"]->AppendInputElement("TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 24, 0, 0);
+	m_shaders["SHD_GameUI"]->AppendInputElement("TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 36, 0, 0);
 	m_shaders["SHD_GameUI"]->LoadShaderByteCode(L"..\\..\\DXEngineResource\\Shader\\GameUI.hlsli", "VS_Main", SHADER_CODE_TYPE::VS);
 	m_shaders["SHD_GameUI"]->LoadShaderByteCode(L"..\\..\\DXEngineResource\\Shader\\GameUI.hlsli", "PS_Main", SHADER_CODE_TYPE::PS);
 	m_shaders["SHD_GameUI"]->Create("SHD_GameUI", shaderInfo);
@@ -125,10 +141,10 @@ bool ResourceManager::Init()
 	};
 
 	NewShader("SHD_SkyDome");
-	m_shaders["SHD_SkyDome"]->AppendInputElement("POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0,  0, 0, 0);
-	m_shaders["SHD_SkyDome"]->AppendInputElement("NORMAL",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, 0, 0);
-	m_shaders["SHD_SkyDome"]->AppendInputElement("TANGENT",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 24, 0, 0);
-	m_shaders["SHD_SkyDome"]->AppendInputElement("TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT,	0, 36, 0, 0);
+	m_shaders["SHD_SkyDome"]->AppendInputElement("POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, 0, 0);
+	m_shaders["SHD_SkyDome"]->AppendInputElement("NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, 0, 0);
+	m_shaders["SHD_SkyDome"]->AppendInputElement("TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 24, 0, 0);
+	m_shaders["SHD_SkyDome"]->AppendInputElement("TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 36, 0, 0);
 	m_shaders["SHD_SkyDome"]->LoadShaderByteCode(L"..\\..\\DXEngineResource\\Shader\\SkyBox.hlsli", "VS_Main", SHADER_CODE_TYPE::VS);
 	m_shaders["SHD_SkyDome"]->LoadShaderByteCode(L"..\\..\\DXEngineResource\\Shader\\SkyBox.hlsli", "PS_Main", SHADER_CODE_TYPE::PS);
 	m_shaders["SHD_SkyDome"]->Create("SHD_SkyDome", shaderInfo);
@@ -138,102 +154,113 @@ bool ResourceManager::Init()
 	NewMaterial("MAT_StandardSurface");
 	m_materials["MAT_StandardSurface"]->SetAmbient(0.0f, 0.0f, 0.0f, 0.0f);
 	m_materials["MAT_StandardSurface"]->SetDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
-	m_materials["MAT_StandardSurface"]->SetShininess(0.8f, 0.8f, 0.8f, 0.8f);
-	m_materials["MAT_StandardSurface"]->SetSpecular(1.0f, 1.0f, 1.0f, 1.0f);
+	m_materials["MAT_StandardSurface"]->SetShininess(0.8f);
+	m_materials["MAT_StandardSurface"]->SetSpecular(1.0f, 1.0f, 1.0f);
 
 	NewMaterial("MAT_CheckerBoard");
 	m_materials["MAT_CheckerBoard"]->SetAmbient(0.0f, 0.0f, 0.0f, 0.0f);
 	m_materials["MAT_CheckerBoard"]->SetDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
-	m_materials["MAT_CheckerBoard"]->SetShininess(0.0f, 0.0f, 0.0f, 0.0f);
-	m_materials["MAT_CheckerBoard"]->SetSpecular(0.0f, 0.0f, 0.0f, 0.0f);
+	m_materials["MAT_CheckerBoard"]->SetShininess(0.0f);
+	m_materials["MAT_CheckerBoard"]->SetSpecular(0.0f, 0.0f, 0.0f);
 	m_materials["MAT_CheckerBoard"]->SetTexture(TREGISTER_TYPE::DIFFUSE_TEXTURE2D, m_textures["TX_CheckerBoard"]);
 
 	NewMaterial("MAT_Deferred_Geometry_0");
 	m_materials["MAT_Deferred_Geometry_0"]->SetAmbient(0.0f, 0.0f, 0.0f, 0.0f);
 	m_materials["MAT_Deferred_Geometry_0"]->SetDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
-	m_materials["MAT_Deferred_Geometry_0"]->SetShininess(0.0f, 0.0f, 0.0f, 0.0f);
-	m_materials["MAT_Deferred_Geometry_0"]->SetSpecular(0.0f, 0.0f, 0.0f, 0.0f);
+	m_materials["MAT_Deferred_Geometry_0"]->SetShininess(0.0f);
+	m_materials["MAT_Deferred_Geometry_0"]->SetSpecular(0.0f, 0.0f, 0.0f);
 
 	NewMaterial("MAT_Deferred_Geometry_1");
 	m_materials["MAT_Deferred_Geometry_1"]->SetAmbient(0.0f, 0.0f, 0.0f, 0.0f);
 	m_materials["MAT_Deferred_Geometry_1"]->SetDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
-	m_materials["MAT_Deferred_Geometry_1"]->SetShininess(0.0f, 0.0f, 0.0f, 0.0f);
-	m_materials["MAT_Deferred_Geometry_1"]->SetSpecular(0.0f, 0.0f, 0.0f, 0.0f);
+	m_materials["MAT_Deferred_Geometry_1"]->SetShininess(0.0f);
+	m_materials["MAT_Deferred_Geometry_1"]->SetSpecular(0.0f, 0.0f, 0.0f);
 
 	NewMaterial("MAT_Deferred_Geometry_2");
 	m_materials["MAT_Deferred_Geometry_2"]->SetAmbient(0.0f, 0.0f, 0.0f, 0.0f);
 	m_materials["MAT_Deferred_Geometry_2"]->SetDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
-	m_materials["MAT_Deferred_Geometry_2"]->SetShininess(0.0f, 0.0f, 0.0f, 0.0f);
-	m_materials["MAT_Deferred_Geometry_2"]->SetSpecular(0.0f, 0.0f, 0.0f, 0.0f);
+	m_materials["MAT_Deferred_Geometry_2"]->SetShininess(0.0f);
+	m_materials["MAT_Deferred_Geometry_2"]->SetSpecular(0.0f, 0.0f, 0.0f);
 
 	NewMaterial("MAT_Deferred_Geometry_3");
 	m_materials["MAT_Deferred_Geometry_3"]->SetAmbient(0.0f, 0.0f, 0.0f, 0.0f);
 	m_materials["MAT_Deferred_Geometry_3"]->SetDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
-	m_materials["MAT_Deferred_Geometry_3"]->SetShininess(0.0f, 0.0f, 0.0f, 0.0f);
-	m_materials["MAT_Deferred_Geometry_3"]->SetSpecular(0.0f, 0.0f, 0.0f, 0.0f);
+	m_materials["MAT_Deferred_Geometry_3"]->SetShininess(0.0f);
+	m_materials["MAT_Deferred_Geometry_3"]->SetSpecular(0.0f, 0.0f, 0.0f);
 
 	NewMaterial("MAT_Deferred_Geometry_4");
 	m_materials["MAT_Deferred_Geometry_4"]->SetAmbient(0.0f, 0.0f, 0.0f, 0.0f);
 	m_materials["MAT_Deferred_Geometry_4"]->SetDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
-	m_materials["MAT_Deferred_Geometry_4"]->SetShininess(0.0f, 0.0f, 0.0f, 0.0f);
-	m_materials["MAT_Deferred_Geometry_4"]->SetSpecular(0.0f, 0.0f, 0.0f, 0.0f);
+	m_materials["MAT_Deferred_Geometry_4"]->SetShininess(0.0f);
+	m_materials["MAT_Deferred_Geometry_4"]->SetSpecular(0.0f, 0.0f, 0.0f);
+
+	NewMaterial("MAT_Deferred_Geometry_5");
+	m_materials["MAT_Deferred_Geometry_5"]->SetAmbient(0.0f, 0.0f, 0.0f, 0.0f);
+	m_materials["MAT_Deferred_Geometry_5"]->SetDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
+	m_materials["MAT_Deferred_Geometry_5"]->SetShininess(0.0f);
+	m_materials["MAT_Deferred_Geometry_5"]->SetSpecular(0.0f, 0.0f, 0.0f);
 
 	NewMaterial("MAT_SkyDome");
 	m_materials["MAT_SkyDome"]->SetAmbient(0.0f, 0.0f, 0.0f, 0.0f);
 	m_materials["MAT_SkyDome"]->SetDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
-	m_materials["MAT_SkyDome"]->SetShininess(0.0f, 0.0f, 0.0f, 0.0f);
-	m_materials["MAT_SkyDome"]->SetSpecular(0.0f, 0.0f, 0.0f, 0.0f);
+	m_materials["MAT_SkyDome"]->SetShininess(0.0f);
+	m_materials["MAT_SkyDome"]->SetSpecular(0.0f, 0.0f, 0.0f);
 	m_materials["MAT_SkyDome"]->SetTexture(TREGISTER_TYPE::DIFFUSE_TEXTURE2D, m_textures["TX_SkyDome"]);
 
 	NewMaterial("MAT_AmbientLight");
 	m_materials["MAT_AmbientLight"]->SetAmbient(0.0f, 0.0f, 0.0f, 0.0f);
 	m_materials["MAT_AmbientLight"]->SetDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
-	m_materials["MAT_AmbientLight"]->SetShininess(0.0f, 0.0f, 0.0f, 0.0f);
-	m_materials["MAT_AmbientLight"]->SetSpecular(0.0f, 0.0f, 0.0f, 0.0f);
+	m_materials["MAT_AmbientLight"]->SetShininess(0.0f);
+	m_materials["MAT_AmbientLight"]->SetSpecular(0.0f, 0.0f, 0.0f);
 	m_materials["MAT_AmbientLight"]->SetUserDataInt(0, static_cast<uint32>(LIGHT_TYPE::AMBIENT));
-	m_materials["MAT_AmbientLight"]->SetTexture(TREGISTER_TYPE::DIFFUSE_TEXTURE2D,  m_textures["DRT_Diffuse"]);
+	m_materials["MAT_AmbientLight"]->SetTexture(TREGISTER_TYPE::DIFFUSE_TEXTURE2D, m_textures["DRT_DiffuseAndSpecular"]);
 	m_materials["MAT_AmbientLight"]->SetTexture(TREGISTER_TYPE::SPECULAR_TEXTURE2D, m_textures["DRT_DiffuseLight"]);
-	m_materials["MAT_AmbientLight"]->SetTexture(TREGISTER_TYPE::AMBIENT_TEXTURE2D,  m_textures["DRT_SpecularLight"]);
+	m_materials["MAT_AmbientLight"]->SetTexture(TREGISTER_TYPE::SHININESS_TEXTURE2D, m_textures["DRT_SpecularLight"]);
+	m_materials["MAT_AmbientLight"]->SetTexture(TREGISTER_TYPE::NORMAL_TEXTURE2D, m_textures["DRT_Shadow"]);
 
 	NewMaterial("MAT_DirectionalLight");
 	m_materials["MAT_DirectionalLight"]->SetAmbient(1.0f, 1.0f, 1.0f, 1.0f);
 	m_materials["MAT_DirectionalLight"]->SetDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
-	m_materials["MAT_DirectionalLight"]->SetShininess(0.0f, 0.0f, 0.0f, 1.0f);
-	m_materials["MAT_DirectionalLight"]->SetSpecular(1.0f, 1.0f, 1.0f, 1.0f);
+	m_materials["MAT_DirectionalLight"]->SetShininess(0.5f);
+	m_materials["MAT_DirectionalLight"]->SetSpecular(1.0f, 1.0f, 1.0f);
 	m_materials["MAT_DirectionalLight"]->SetUserDataInt(0, static_cast<uint32>(LIGHT_TYPE::DIRECTIONAL));
-	m_materials["MAT_DirectionalLight"]->SetTexture(TREGISTER_TYPE::DIFFUSE_TEXTURE2D, m_textures["DRT_Position"]);
-	m_materials["MAT_DirectionalLight"]->SetTexture(TREGISTER_TYPE::NORMAL_TEXTURE2D,  m_textures["DRT_Normal"]);
+	m_materials["MAT_DirectionalLight"]->SetTexture(TREGISTER_TYPE::DIFFUSE_TEXTURE2D, m_textures["DRT_DiffuseAndSpecular"]);
+	m_materials["MAT_DirectionalLight"]->SetTexture(TREGISTER_TYPE::SPECULAR_TEXTURE2D, m_textures["DRT_NormalAndShininess"]);
+	m_materials["MAT_DirectionalLight"]->SetTexture(TREGISTER_TYPE::SHININESS_TEXTURE2D, m_textures["DRT_Position"]);
 
 	NewMaterial("MAT_SpotLight");
 	m_materials["MAT_SpotLight"]->SetAmbient(0.0f, 0.0f, 0.0f, 0.0f);
 	m_materials["MAT_SpotLight"]->SetDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
-	m_materials["MAT_SpotLight"]->SetShininess(0.0f, 0.0f, 0.0f, 0.0f);
-	m_materials["MAT_SpotLight"]->SetSpecular(0.0f, 0.0f, 0.0f, 0.0f);
-	m_materials["MAT_SpotLight"]->SetUserDataInt(0, static_cast<uint32>(LIGHT_TYPE::DIRECTIONAL));
-	m_materials["MAT_SpotLight"]->SetTexture(TREGISTER_TYPE::DIFFUSE_TEXTURE2D, m_textures["DRT_Position"]);
-	m_materials["MAT_SpotLight"]->SetTexture(TREGISTER_TYPE::NORMAL_TEXTURE2D,  m_textures["DRT_Normal"]);
+	m_materials["MAT_SpotLight"]->SetShininess(0.0f);
+	m_materials["MAT_SpotLight"]->SetSpecular(0.0f, 0.0f, 0.0f);
+	m_materials["MAT_SpotLight"]->SetUserDataInt(0, static_cast<uint32>(LIGHT_TYPE::POINT));
+	m_materials["MAT_SpotLight"]->SetTexture(TREGISTER_TYPE::DIFFUSE_TEXTURE2D, m_textures["DRT_DiffuseAndSpecular"]);
+	m_materials["MAT_SpotLight"]->SetTexture(TREGISTER_TYPE::SPECULAR_TEXTURE2D, m_textures["DRT_NormalAndShininess"]);
+	m_materials["MAT_SpotLight"]->SetTexture(TREGISTER_TYPE::SHININESS_TEXTURE2D, m_textures["DRT_Position"]);
 
 	NewMaterial("MAT_PointLight");
 	m_materials["MAT_PointLight"]->SetAmbient(0.0f, 0.0f, 0.0f, 0.0f);
 	m_materials["MAT_PointLight"]->SetDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
-	m_materials["MAT_PointLight"]->SetShininess(0.0f, 0.0f, 0.0f, 0.0f);
-	m_materials["MAT_PointLight"]->SetSpecular(0.0f, 0.0f, 0.0f, 0.0f);
+	m_materials["MAT_PointLight"]->SetShininess(0.0f);
+	m_materials["MAT_PointLight"]->SetSpecular(0.0f, 0.0f, 0.0f);
 	m_materials["MAT_PointLight"]->SetUserDataInt(0, static_cast<uint32>(LIGHT_TYPE::DIRECTIONAL));
 	m_materials["MAT_PointLight"]->SetTexture(TREGISTER_TYPE::DIFFUSE_TEXTURE2D, m_textures["DRT_Position"]);
-	m_materials["MAT_PointLight"]->SetTexture(TREGISTER_TYPE::NORMAL_TEXTURE2D,  m_textures["DRT_Normal"]);
+	m_materials["MAT_PointLight"]->SetTexture(TREGISTER_TYPE::NORMAL_TEXTURE2D, m_textures["DRT_Normal"]);
+
+	NewMaterial("MAT_Shadow");
 
 	NewMaterial("MAT_WoodBox");
 	m_materials["MAT_WoodBox"]->SetAmbient(0.0f, 0.0f, 0.0f, 0.0f);
 	m_materials["MAT_WoodBox"]->SetDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
-	m_materials["MAT_WoodBox"]->SetShininess(0.0f, 0.0f, 0.0f, 0.0f);
-	m_materials["MAT_WoodBox"]->SetSpecular(0.0f, 0.0f, 0.0f, 0.0f);
+	m_materials["MAT_WoodBox"]->SetShininess(0.0f);
+	m_materials["MAT_WoodBox"]->SetSpecular(0.7f, 0.7f, 0.7f);
 	m_materials["MAT_WoodBox"]->SetTexture(TREGISTER_TYPE::DIFFUSE_TEXTURE2D, m_textures["TX_WoodBox"]);
 
 	NewMaterial("MAT_Grid");
 	m_materials["MAT_Grid"]->SetAmbient(0.0f, 0.0f, 0.0f, 0.0f);
 	m_materials["MAT_Grid"]->SetDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
-	m_materials["MAT_Grid"]->SetShininess(0.0f, 0.0f, 0.0f, 0.0f);
-	m_materials["MAT_Grid"]->SetSpecular(0.0f, 0.0f, 0.0f, 0.0f);
+	m_materials["MAT_Grid"]->SetShininess(0.0f);
+	m_materials["MAT_Grid"]->SetSpecular(1.0f, 1.0f, 1.0f);
 	m_materials["MAT_Grid"]->SetTexture(TREGISTER_TYPE::DIFFUSE_TEXTURE2D, m_textures["TX_CheckerBoard"]);
 #pragma endregion
 
@@ -273,10 +300,20 @@ bool ResourceManager::Init()
 	m_polySurfaces["PLY_Deferred_Polysurface_4"]->SetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	m_polySurfaces["PLY_Deferred_Polysurface_4"]->Commit();
 
+	NewPolySurface("PLY_Deferred_Polysurface_5");
+	m_polySurfaces["PLY_Deferred_Polysurface_5"]->CreateGrid(EngineWidth, EngineHeight, 2, 2);
+	m_polySurfaces["PLY_Deferred_Polysurface_5"]->SetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	m_polySurfaces["PLY_Deferred_Polysurface_5"]->Commit();
+
 	NewPolySurface("UIBaseShape");
 	m_polySurfaces["UIBaseShape"]->CreateGrid(256, 256, 2, 2, "MAT_CheckerBoard");
 	m_polySurfaces["UIBaseShape"]->SetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	m_polySurfaces["UIBaseShape"]->Commit();
+
+	NewPolySurface("PLY_LightGeometry");
+	m_polySurfaces["PLY_LightGeometry"]->CreateGrid(0.0f, 0.0f, 2, 2);
+	m_polySurfaces["PLY_LightGeometry"]->SetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	m_polySurfaces["PLY_LightGeometry"]->Commit();
 
 	NewPolySurface("Grid");
 	m_polySurfaces["Grid"]->CreateGrid(10, 10, 2, 2);
@@ -298,8 +335,8 @@ bool ResourceManager::Init()
 }
 
 void ResourceManager::NewTexture(const string& name, ComPtr<ID3D12Device> device, DXGI_FORMAT format,
-								uint32 width, uint32 height, const D3D12_HEAP_PROPERTIES& heapProperty,
-								D3D12_HEAP_FLAGS heapFlags, D3D12_RESOURCE_FLAGS resourceFlags, XMFLOAT4 clearColor)
+	uint32 width, uint32 height, const D3D12_HEAP_PROPERTIES& heapProperty,
+	D3D12_HEAP_FLAGS heapFlags, D3D12_RESOURCE_FLAGS resourceFlags, XMFLOAT4 clearColor)
 {
 	shared_ptr<Texture> newTexture = make_shared<Texture>();
 	newTexture->SetName(name);
@@ -340,84 +377,89 @@ void ResourceManager::NewPolySurface(const string& name)
 }
 
 void ResourceManager::ImportFBXFile(ComPtr<ID3D12Device> device, ComPtr<ID3D12GraphicsCommandList> cmdList,
-									const string& assetName, const wstring& filePath)
+	const string& assetName, const wstring& filePath)
 {
-#pragma region ImportFBXFile
-	EngineFbxIO* fbxIO = new EngineFbxIO;
-	fbxIO->Load(filePath);
+	/*
+	=======
+	>>>>>>> a7c455d2312f810411f963be615a9c3111441901
+	#pragma region ImportFBXFile
+		EngineFbxIO* fbxIO = new EngineFbxIO;
+		fbxIO->Load(filePath);
 
-	auto materialElementInfos = fbxIO->GetMaterialElementInfos();
-	for (pair<string, SurfaceMaterialElementInfo> materialElementInfo : materialElementInfos)
-	{
-		//	Create Material
-		string materialName = materialElementInfo.first;
+		auto materialElementInfos = fbxIO->GetMaterialElementInfos();
+		for (pair<string, SurfaceMaterialElementInfo> materialElementInfo : materialElementInfos)
+		{
+			//	Create Material
+			string materialName = materialElementInfo.first;
 
-		NewMaterial(materialName);
-		m_materials[materialName]->SetName(materialElementInfo.second.Name);
-		m_materials[materialName]->SetDiffuse(materialElementInfo.second.Diffuse);
-		m_materials[materialName]->SetSpecular(materialElementInfo.second.Specular);
-		m_materials[materialName]->SetAmbient(materialElementInfo.second.Ambient);
-		m_materials[materialName]->SetShininess(materialElementInfo.second.Shininess);
+			NewMaterial(materialName);
+			m_materials[materialName]->SetName(materialElementInfo.second.Name);
+			m_materials[materialName]->SetDiffuse(materialElementInfo.second.Diffuse);
+			m_materials[materialName]->SetSpecular(materialElementInfo.second.Specular);
+			m_materials[materialName]->SetAmbient(materialElementInfo.second.Ambient);
+			m_materials[materialName]->SetShininess(materialElementInfo.second.Shininess);
 
-		//	Create Texture
-		string temp_textureName = "";
-		if (materialElementInfo.second.DiffuseTexturePath != L"")
-		{
-			wstring test = materialElementInfo.second.DiffuseTexturePath;
-			temp_textureName = materialName + "_Diffuse";
-			LoadTextureFile(temp_textureName, materialElementInfo.second.DiffuseTexturePath);
-			m_materials[materialName]->SetTexture(TREGISTER_TYPE::DIFFUSE_TEXTURE2D, m_textures[temp_textureName]);
-		}
-		if (materialElementInfo.second.SpecularTexturePath != L"")
-		{
-			temp_textureName = materialName + "_Specular";
-			LoadTextureFile(materialName + "_Specular", materialElementInfo.second.SpecularTexturePath);
-			m_materials[materialName]->SetTexture(TREGISTER_TYPE::SPECULAR_TEXTURE2D, m_textures[temp_textureName]);
-		}
-		if (materialElementInfo.second.AmbientTexturePath != L"")
-		{
-			temp_textureName = materialName + "_Ambient";
-			LoadTextureFile(materialName + "_Ambient", materialElementInfo.second.AmbientTexturePath);
-			m_materials[materialName]->SetTexture(TREGISTER_TYPE::AMBIENT_TEXTURE2D, m_textures[temp_textureName]);
-		}
-		if (materialElementInfo.second.ShininessTexturePath != L"")
-		{
-			temp_textureName = materialName + "_Shininess";
-			LoadTextureFile(materialName + "_Shininess", materialElementInfo.second.ShininessTexturePath);
-			m_materials[materialName]->SetTexture(TREGISTER_TYPE::SHININESS_TEXTURE2D, m_textures[temp_textureName]);
-		}
-		if (materialElementInfo.second.NormalTexturePath != L"")
-		{
-			temp_textureName = materialName + "_Normal";
-			LoadTextureFile(materialName + "_Normal", materialElementInfo.second.NormalTexturePath);
-			m_materials[materialName]->SetTexture(TREGISTER_TYPE::NORMAL_TEXTURE2D, m_textures[temp_textureName]);
-		}
-	}
-
-	auto polySurfaceInfos = fbxIO->GetPolySurfaceInfos();
-	for (pair<string, PolySurfaceInfo> polySurfaceInfo : polySurfaceInfos)
-	{
-		//	Create PolySurface
-		string polySurfaceName = polySurfaceInfo.second.name;
-		NewPolySurface(polySurfaceName);
-		m_polySurfaces[polySurfaceName]->SetVertices(polySurfaceInfo.second.Vertices);
-		m_polySurfaces[polySurfaceName]->SetIndices(polySurfaceInfo.second.Indices);
-		
-		for (PolySurfaceShape polySurfaceShape : polySurfaceInfo.second.PolySurfaceShapes)
-		{
-			//m_polySurfaces[polySurfaceName]->AddPolySurfaceShapeInfos(polySurfaceShapeInfo);
+			//	Create Texture
+			string temp_textureName = "";
+			if (materialElementInfo.second.DiffuseTexturePath != L"")
+			{
+				wstring test = materialElementInfo.second.DiffuseTexturePath;
+				temp_textureName = materialName + "_Diffuse";
+				LoadTextureFile(temp_textureName, materialElementInfo.second.DiffuseTexturePath);
+				m_materials[materialName]->SetTexture(TREGISTER_TYPE::DIFFUSE_TEXTURE2D, m_textures[temp_textureName]);
+			}
+			if (materialElementInfo.second.SpecularTexturePath != L"")
+			{
+				temp_textureName = materialName + "_Specular";
+				LoadTextureFile(materialName + "_Specular", materialElementInfo.second.SpecularTexturePath);
+				m_materials[materialName]->SetTexture(TREGISTER_TYPE::SPECULAR_TEXTURE2D, m_textures[temp_textureName]);
+			}
+			if (materialElementInfo.second.AmbientTexturePath != L"")
+			{
+				temp_textureName = materialName + "_Ambient";
+				LoadTextureFile(materialName + "_Ambient", materialElementInfo.second.AmbientTexturePath);
+				m_materials[materialName]->SetTexture(TREGISTER_TYPE::AMBIENT_TEXTURE2D, m_textures[temp_textureName]);
+			}
+			if (materialElementInfo.second.ShininessTexturePath != L"")
+			{
+				temp_textureName = materialName + "_Shininess";
+				LoadTextureFile(materialName + "_Shininess", materialElementInfo.second.ShininessTexturePath);
+				m_materials[materialName]->SetTexture(TREGISTER_TYPE::SHININESS_TEXTURE2D, m_textures[temp_textureName]);
+			}
+			if (materialElementInfo.second.NormalTexturePath != L"")
+			{
+				temp_textureName = materialName + "_Normal";
+				LoadTextureFile(materialName + "_Normal", materialElementInfo.second.NormalTexturePath);
+				m_materials[materialName]->SetTexture(TREGISTER_TYPE::NORMAL_TEXTURE2D, m_textures[temp_textureName]);
+			}
 		}
 
-		m_polySurfaces[polySurfaceName]->Commit();
-	}
+		auto polySurfaceInfos = fbxIO->GetPolySurfaceInfos();
+		for (pair<string, PolySurfaceInfo> polySurfaceInfo : polySurfaceInfos)
+		{
+			//	Create PolySurface
+			string polySurfaceName = polySurfaceInfo.second.name;
+			NewPolySurface(polySurfaceName);
+			m_polySurfaces[polySurfaceName]->SetVertices(polySurfaceInfo.second.Vertices);
+			m_polySurfaces[polySurfaceName]->SetIndices(polySurfaceInfo.second.Indices);
 
-	m_assetInfos[assetName] = make_shared<AssetInfo>();
-	m_assetInfos[assetName]->PolySurfaces = fbxIO->GetFBXSceneInfo().Meshes;
-	m_assetInfos[assetName]->Materials = fbxIO->GetFBXSceneInfo().Materials;
+			for (PolySurfaceShape polySurfaceShape : polySurfaceInfo.second.PolySurfaceShapes)
+			{
+				//m_polySurfaces[polySurfaceName]->AddPolySurfaceShapeInfos(polySurfaceShapeInfo);
+			}
 
-	SAFE_DELETE(fbxIO);
+			m_polySurfaces[polySurfaceName]->Commit();
+		}
 
-#pragma endregion
+		m_assetInfos[assetName] = make_shared<AssetInfo>();
+		m_assetInfos[assetName]->PolySurfaces = fbxIO->GetFBXSceneInfo().Meshes;
+		m_assetInfos[assetName]->Materials = fbxIO->GetFBXSceneInfo().Materials;
+
+		SAFE_DELETE(fbxIO);
+
+	#pragma endregion
+	<<<<<<< HEAD
+	*/
 }
 
 void ResourceManager::NewMaterial(const string& name)

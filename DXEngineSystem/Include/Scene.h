@@ -19,10 +19,16 @@ public:
 
 private:
 	void InitCamera();
-	void InitLights();
+	void InitLightGroup();
 	void InitGameUI();
 	void InitGeometries();
-	
+
+private:
+	void RenderDeferred();
+	void RenderLighting();
+	void RenderForward();
+	void RenderGameUI();
+
 private:
 	void SetCameraToObserver(const string& name);
 	void SetCameraToRenderGameUI(const string& name);
@@ -38,7 +44,7 @@ private:
 	vector<shared_ptr<Geometry>>					m_renderLayers_gameUI;
 
 	array<vector<shared_ptr<Geometry>>, RENDER_LAYER_ID(RENDER_LAYER::COUNT)> m_renderLayers_forward;
-	array<vector<shared_ptr<Geometry>>, RENDER_LAYER_ID(RENDER_LAYER::COUNT)> m_renderLayers_deferred;	
+	array<vector<shared_ptr<Geometry>>, RENDER_LAYER_ID(RENDER_LAYER::COUNT)> m_renderLayers_deferred;
 
 private:
 	void UpdateInputAndTimer(const float& deltaTime);

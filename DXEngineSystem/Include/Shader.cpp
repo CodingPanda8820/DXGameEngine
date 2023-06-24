@@ -73,12 +73,13 @@ void Shader::LoadShaderByteCode(const wstring& shaderFilePath, const string& nam
 
 void Shader::CreatePSO(SHADER_TYPE type)
 {
+	//D3D12_COMPUTE_PIPELINE_STATE_DESC
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;
 	ZeroMemory(&psoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
 	psoDesc.InputLayout = { m_inputElements.data(), (UINT)m_inputElements.size() };
 	psoDesc.pRootSignature = EngineSystem::GetInst()->GetRootSignature().Get();
 	psoDesc.RasterizerState = m_rasterizerDesc;
-	psoDesc.BlendState = m_blendDesc; 
+	psoDesc.BlendState = m_blendDesc;
 	//psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
 	//psoDesc.BlendState.AlphaToCoverageEnable = true;
 	psoDesc.DepthStencilState = m_depthStencilDesc;
@@ -95,7 +96,7 @@ void Shader::CreatePSO(SHADER_TYPE type)
 		psoDesc.NumRenderTargets = RENDER_TARGET_GBUFFER_COUNT;
 		psoDesc.RTVFormats[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
 		psoDesc.RTVFormats[1] = DXGI_FORMAT_R32G32B32A32_FLOAT;
-		psoDesc.RTVFormats[2] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		psoDesc.RTVFormats[2] = DXGI_FORMAT_R32G32B32A32_FLOAT;
 		break;
 	case SHADER_TYPE::FORWARD:
 		psoDesc.NumRenderTargets = 1;
@@ -105,6 +106,10 @@ void Shader::CreatePSO(SHADER_TYPE type)
 		psoDesc.NumRenderTargets = RENDER_TARGET_LIGHTING_COUNT;
 		psoDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		psoDesc.RTVFormats[1] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		break;
+	case SHADER_TYPE::SHADOW:
+		psoDesc.NumRenderTargets = RENDER_TARGET_SHADOW_COUNT;
+		psoDesc.RTVFormats[0] = DXGI_FORMAT_R32_FLOAT;
 		break;
 	default:
 		break;
@@ -132,7 +137,7 @@ void Shader::SetBlendType(BLEND_TYPE type)
 {
 
 	D3D12_RENDER_TARGET_BLEND_DESC& renderTargetBlendDesc = m_blendDesc.RenderTarget[0];
-	
+
 	switch (type)
 	{
 	case BLEND_TYPE::DEFAULT:
@@ -237,7 +242,7 @@ ComPtr<ID3DBlob> Shader::CompileShader(const wstring& shaderFilePath, const D3D_
 	ComPtr<ID3DBlob> errors;
 
 	hr = D3DCompileFromFile(shaderFilePath.c_str(), defines, D3D_COMPILE_STANDARD_FILE_INCLUDE,
-							entryPoint.c_str(), version.c_str(), compileFlags, 0, &byteCode, &errors);
+		entryPoint.c_str(), version.c_str(), compileFlags, 0, &byteCode, &errors);
 
 	if (errors != nullptr)
 		OutputDebugStringA((char*)errors->GetBufferPointer());
@@ -246,7 +251,7 @@ ComPtr<ID3DBlob> Shader::CompileShader(const wstring& shaderFilePath, const D3D_
 }
 
 void Shader::AppendInputElement(LPCSTR name, UINT index, DXGI_FORMAT format, UINT slot,
-								UINT byteOffset, UINT dataType, UINT stepRate)
+	UINT byteOffset, UINT dataType, UINT stepRate)
 {
 	D3D12_INPUT_ELEMENT_DESC inputElement;
 	inputElement.SemanticName = name;

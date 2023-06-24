@@ -21,9 +21,21 @@ void LightGroup::Update()
 	UpdateAttributes();
 }
 
-void LightGroup::Render()
+void LightGroup::Render(OBJECT_RENDER_TYPE type)
 {
 	RenderAttributes();
+}
+
+void LightGroup::PostUpdate()
+{
+}
+
+void LightGroup::RenderObject()
+{
+}
+
+void LightGroup::RenderShadow()
+{
 }
 
 void LightGroup::AddLight(const string& name, LIGHT_TYPE type)
@@ -83,15 +95,16 @@ void LightGroup::UpdateAttributes()
 
 	for (auto light : m_lights)
 	{
+		light.second->SetLightIndex(lightIndex);
 		light.second->GetMaterial()->SetUserDataInt(0, lightIndex);
 
 		CBLight lightAttribute;
-		lightAttribute.Strength		= light.second->GetStrength();
+		lightAttribute.Strength = light.second->GetStrength();
 		lightAttribute.FalloffStart = light.second->GetFalloffStart();
-		lightAttribute.Direction	= light.second->GetDirection();
-		lightAttribute.FalloffEnd	= light.second->GetFalloffEnd();
-		lightAttribute.Position		= light.second->GetPosition();
-		lightAttribute.SpotPower	= light.second->GetSpotPower();
+		lightAttribute.Direction = light.second->GetDirection();
+		lightAttribute.FalloffEnd = light.second->GetFalloffEnd();
+		lightAttribute.Position = light.second->GetPosition();
+		lightAttribute.SpotPower = light.second->GetSpotPower();
 
 		attributes.Light[lightIndex] = lightAttribute;
 

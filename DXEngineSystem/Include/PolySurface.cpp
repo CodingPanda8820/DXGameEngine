@@ -48,8 +48,8 @@ void PolySurface::Render()
 
 void PolySurface::RenderPolySurfaceShape(const string& name)
 {
-	int indexCount	= m_polySurfaceShapes[name].IndexCount;
-	int indexStart	= m_polySurfaceShapes[name].StartIndexLocation;
+	int indexCount = m_polySurfaceShapes[name].IndexCount;
+	int indexStart = m_polySurfaceShapes[name].StartIndexLocation;
 	int vertexStart = m_polySurfaceShapes[name].StartVertexLocation;
 
 	EngineSystem::GetInst()->GetCmdList()->DrawIndexedInstanced(indexCount, 1, indexStart, vertexStart, 0);
@@ -103,7 +103,7 @@ void PolySurface::Create(string name, vector<Vertex> vertices, vector<uint32> in
 }
 
 void PolySurface::CreateBox(float width, float height, float depth,
-							uint32 numSubdivisions, const string& mat)
+	uint32 numSubdivisions, const string& mat)
 {
 #pragma region
 	float w2 = 0.5f * width;
@@ -155,7 +155,7 @@ void PolySurface::CreateBox(float width, float height, float depth,
 	indices[3] = 0;	indices[4] = 2;	indices[5] = 3;
 
 	// Fill in the back face index data
-	indices[6] = 4;	indices[7]	= 5; indices[8]	 = 6;
+	indices[6] = 4;	indices[7] = 5; indices[8] = 6;
 	indices[9] = 4;	indices[10] = 6; indices[11] = 7;
 
 	// Fill in the top face index data
@@ -348,6 +348,9 @@ void PolySurface::CreatePolySurface(const string& name, vector<Vertex> vertices,
 	{
 		m_indices.push_back(indices[i]);
 	}
+
+	m_vertexCount = m_vertices.size();
+	m_indexCount = m_indices.size();
 #pragma endregion
 }
 

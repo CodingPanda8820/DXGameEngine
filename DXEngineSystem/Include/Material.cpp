@@ -4,12 +4,12 @@
 
 Material::Material()
 {
-	m_diffuse		= { 1.0f, 1.0f, 1.0f, 1.0f };
-	m_specular		= { 0.01f, 0.01f, 0.01f, 1.0f};
-	m_ambient		= { 0.0f, 0.0f, 0.0f, 0.0f };
-	m_shininess		= { 0.01f, 0.01f, 0.01f, 1.0f};
+	m_diffuse = { 1.0f, 1.0f, 1.0f, 1.0f };
+	m_specular = { 0.01f, 0.01f, 0.01f };
+	m_ambient = { 0.0f, 0.0f, 0.0f, 0.0f };
+	m_shininess = 1.0f;
 
-	m_texturesOn	= { 0 };
+	m_texturesOn = { 0 };
 
 	m_attributes = make_unique<UploadBuffer<CBMaterial>>(EngineSystem::GetInst()->GetDevice().Get(), 1, true);
 }
@@ -44,49 +44,40 @@ void Material::SetDiffuse(float r, float g, float b, float a)
 	m_diffuse.w = a;
 }
 
-void Material::SetSpecular(const XMFLOAT4& rgba)
+void Material::SetSpecular(const XMFLOAT3& rgb)
 {
-	m_specular = rgba;
+	m_specular = rgb;
 }
 
-void Material::SetSpecular(float r, float g, float b, float a)
+void Material::SetSpecular(float r, float g, float b)
 {
 	m_specular.x = r;
 	m_specular.y = g;
 	m_specular.z = b;
-	m_specular.w = a;
+}
+
+void Material::SetShininess(float value)
+{
+	m_shininess = value;
 }
 
 void Material::SetAmbient(const XMFLOAT4& rgba)
 {
-	m_specular = rgba;
+	m_ambient = rgba;
 }
 
 void Material::SetAmbient(float r, float g, float b, float a)
 {
-	m_specular.x = r;
-	m_specular.y = g;
-	m_specular.z = b;
-	m_specular.w = a;
-}
-
-void Material::SetShininess(const XMFLOAT4& rgba)
-{
-	m_specular = rgba;
-}
-
-void Material::SetShininess(float r, float g, float b, float a)
-{
-	m_specular.x = r;
-	m_specular.y = g;
-	m_specular.z = b;
-	m_specular.w = a;
+	m_ambient.x = r;
+	m_ambient.y = g;
+	m_ambient.z = b;
+	m_ambient.w = a;
 }
 
 void Material::SetTexture(TREGISTER_TYPE type, shared_ptr<Texture> texture)
 {
-	m_textures[REGISTER_ID(type)]	= texture;
-	m_texturesOn[REGISTER_ID(type)]	= 1;
+	m_textures[REGISTER_ID(type)] = texture;
+	m_texturesOn[REGISTER_ID(type)] = 1;
 }
 
 void Material::SetTexture(uint8 registerID, shared_ptr<Texture> texture)
@@ -115,7 +106,7 @@ XMFLOAT4 Material::GetDiffuse()
 	return m_diffuse;
 }
 
-XMFLOAT4 Material::GetSpecular()
+XMFLOAT3 Material::GetSpecular()
 {
 	return m_specular;
 }
@@ -125,7 +116,7 @@ XMFLOAT4 Material::GetAmbient()
 	return m_ambient;
 }
 
-XMFLOAT4 Material::GetShininess()
+float Material::GetShininess()
 {
 	return m_shininess;
 }
@@ -143,16 +134,15 @@ float Material::GetUserDataFloat(uint8 index)
 void Material::UpdateAttributes()
 {
 	CBMaterial attributes;
-	attributes.Diffuse	 = m_diffuse;
-	attributes.Specular	 = m_specular;
-	attributes.Ambient	 = m_ambient;
+	attributes.Diffuse = m_diffuse;
+	attributes.Specular = m_specular;
 	attributes.Shininess = m_shininess;
+	attributes.Ambient = m_ambient;
 
-	attributes.DiffuseTexture2D   = m_texturesOn[REGISTER_ID(TREGISTER_TYPE::DIFFUSE_TEXTURE2D)];
-	attributes.SpecularTexture2D  = m_texturesOn[REGISTER_ID(TREGISTER_TYPE::SPECULAR_TEXTURE2D)];
-	attributes.AmbientTexture2D   = m_texturesOn[REGISTER_ID(TREGISTER_TYPE::AMBIENT_TEXTURE2D)];
+	attributes.DiffuseTexture2D = m_texturesOn[REGISTER_ID(TREGISTER_TYPE::DIFFUSE_TEXTURE2D)];
+	attributes.SpecularTexture2D = m_texturesOn[REGISTER_ID(TREGISTER_TYPE::SPECULAR_TEXTURE2D)];
 	attributes.ShininessTexture2D = m_texturesOn[REGISTER_ID(TREGISTER_TYPE::SHININESS_TEXTURE2D)];
-	attributes.NormalTexture2D	  = m_texturesOn[REGISTER_ID(TREGISTER_TYPE::NORMAL_TEXTURE2D)];
+	attributes.NormalTexture2D = m_texturesOn[REGISTER_ID(TREGISTER_TYPE::NORMAL_TEXTURE2D)];
 
 	attributes.UserDataInt_0 = m_userDataInt[0];
 	attributes.UserDataInt_1 = m_userDataInt[1];
@@ -163,6 +153,11 @@ void Material::UpdateAttributes()
 	attributes.UserDataFloat_1 = m_userDataFloat[1];
 	attributes.UserDataFloat_2 = m_userDataFloat[2];
 	attributes.UserDataFloat_3 = m_userDataFloat[3];
+
+	attributes.UserDataMatrix_0 = m_userDataMatrix[0];
+	attributes.UserDataMatrix_1 = m_userDataMatrix[1];
+	attributes.UserDataMatrix_2 = m_userDataMatrix[2];
+	attributes.UserDataMatrix_3 = m_userDataMatrix[3];
 
 	m_attributes->CopyData(0, attributes);
 }
@@ -181,7 +176,7 @@ void Material::RenderAttributes()
 void Material::RenderTextures()
 {
 	D3D12_DESCRIPTOR_HEAP_DESC srvDescriptorHeap = {};
-	srvDescriptorHeap.NumDescriptors = 5;
+	srvDescriptorHeap.NumDescriptors = 4;
 	srvDescriptorHeap.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	srvDescriptorHeap.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	EngineSystem::GetInst()->GetDevice()->CreateDescriptorHeap(&srvDescriptorHeap, IID_PPV_ARGS(&m_descriptorHeap));
@@ -202,11 +197,11 @@ void Material::RenderTextures()
 		destCpuHandle.Offset(i, m_cpuHandleSize);
 
 		EngineSystem::GetInst()->GetDevice()->CopyDescriptors(1, &destCpuHandle, &destRange,
-															  1, &m_textures[i]->GetSRVCpuHandle(), &srcRange,
-															  D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+			1, &m_textures[i]->GetSRVCpuHandle(), &srcRange,
+			D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	}
 
-	ID3D12DescriptorHeap* descriptorHeaps[] = {m_descriptorHeap.Get()};
+	ID3D12DescriptorHeap* descriptorHeaps[] = { m_descriptorHeap.Get() };
 	EngineSystem::GetInst()->GetCmdList()->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 
 	CD3DX12_GPU_DESCRIPTOR_HANDLE srvGpuHandle(m_descriptorHeap->GetGPUDescriptorHandleForHeapStart());

@@ -8,13 +8,16 @@ public:
 	virtual ~Geometry();
 
 public:
-	virtual void Init() override;
-	virtual void Update() override;
-	virtual void Render() override;
-	virtual void PostUpdate() override;
+	virtual void Init();
+	virtual void Update();
+	virtual void Render(OBJECT_RENDER_TYPE type = OBJECT_RENDER_TYPE::OBJECT);
+	virtual void PostUpdate();
+
+private:
+	virtual void RenderObject();
+	virtual void RenderShadow();
 
 public:
-	void SetMaterial(const string& name);
 	void SetVisibility(RENDER_LAYER layer, bool state);
 	void AddPolySurface(const string& name);
 	void AddPolySurfaces(vector<string> names);
@@ -25,15 +28,12 @@ public:
 
 private:
 	array<bool, RENDER_LAYER_ID(RENDER_LAYER::COUNT)>	m_visibility;
-
-	shared_ptr<Material>								m_material;
 	unordered_map<string, shared_ptr<PolySurface>>		m_polySurfaces;
 
 public:
-	virtual void UpdateAttributes() override;
-	virtual void RenderAttributes() override;
+	virtual void UpdateAttributes();
+	virtual void RenderAttributes();
 
 public:
 	unique_ptr<UploadBuffer<CBGameObject>> m_attributes;
 };
-

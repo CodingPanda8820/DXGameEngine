@@ -362,5 +362,8 @@
     <None Include="..\..\DXEngineResource\Shader\SkyBox.hlsli">
       <Filter>01.EngineSystem\03.EngineResource\01.Operator\01.Type\01.Shader\01.HLSL</Filter>
     </None>
+    <None Include="..\..\DXEngineResource\Shader\DeferredShadow.hlsli">
+      <Filter>01.EngineSystem\03.EngineResource\01.Operator\01.Type\01.Shader\01.HLSL</Filter>
+    </None>
   </ItemGroup>
 </Project>

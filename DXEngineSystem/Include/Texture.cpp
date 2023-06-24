@@ -10,15 +10,15 @@ Texture::~Texture()
 }
 
 void Texture::Create(ComPtr<ID3D12Device> device, DXGI_FORMAT format, uint32 width, uint32 height,
-					const D3D12_HEAP_PROPERTIES& heapProperty, D3D12_HEAP_FLAGS heapFlags,
-					D3D12_RESOURCE_FLAGS resourceFlags, XMFLOAT4 clearColor)
+	const D3D12_HEAP_PROPERTIES& heapProperty, D3D12_HEAP_FLAGS heapFlags,
+	D3D12_RESOURCE_FLAGS resourceFlags, XMFLOAT4 clearColor)
 {
 	D3D12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Tex2D(format, width, height);
 	resourceDesc.Flags = resourceFlags;
 
 	D3D12_CLEAR_VALUE optClearValue = {};
 	D3D12_RESOURCE_STATES resourceStates = D3D12_RESOURCE_STATE_COMMON;
-	
+
 	if (resourceFlags & D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL)
 	{
 		resourceStates = D3D12_RESOURCE_STATE_DEPTH_WRITE;
@@ -32,7 +32,7 @@ void Texture::Create(ComPtr<ID3D12Device> device, DXGI_FORMAT format, uint32 wid
 	}
 
 	HRESULT hr = device->CreateCommittedResource(&heapProperty, heapFlags, &resourceDesc, resourceStates,
-												 &optClearValue, IID_PPV_ARGS(&m_resource));
+		&optClearValue, IID_PPV_ARGS(&m_resource));
 
 	assert(SUCCEEDED(hr));
 
@@ -147,6 +147,16 @@ void Texture::SetName(const string& name)
 string Texture::GetName()
 {
 	return m_name;
+}
+
+float Texture::GetTextureWidth()
+{
+	return m_resource->GetDesc().Width;
+}
+
+float Texture::GetTextureHeight()
+{
+	return m_resource->GetDesc().Height;
 }
 
 ComPtr<ID3D12Resource> Texture::GetResource()

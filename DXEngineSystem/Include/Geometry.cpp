@@ -25,15 +25,31 @@ void Geometry::Update()
 	GameObject::Update();
 }
 
-void Geometry::Render()
+void Geometry::Render(OBJECT_RENDER_TYPE type)
 {
-	GameObject::Render();
+	GameObject::Render(type);
 
+	switch (type)
+	{
+	case OBJECT_RENDER_TYPE::OBJECT:
+		RenderObject();
+		break;
+	case OBJECT_RENDER_TYPE::SHADOW:
+		RenderShadow();
+		break;
+	default:
+		break;
+	}
+}
+
+void Geometry::PostUpdate()
+{
+}
+
+void Geometry::RenderObject()
+{
 	for (auto polySurface : m_polySurfaces)
 	{
-		UpdateAttributes();
-		RenderAttributes();
-
 		polySurface.second->Update();
 
 		for (auto polySurfaceShape : polySurface.second->GetPolySurfaceShapes())
@@ -47,17 +63,18 @@ void Geometry::Render()
 			}
 
 			polySurface.second->RenderPolySurfaceShape(polySurfaceShape.first);
-		}		
+
+		}
 	}
 }
 
-void Geometry::PostUpdate()
+void Geometry::RenderShadow()
 {
-}
-
-void Geometry::SetMaterial(const string& name)
-{
-	m_material = ResourceManager::GetInst()->FindMaterial(name);
+	for (auto polySurface : m_polySurfaces)
+	{
+		polySurface.second->Update();
+		polySurface.second->Render();
+	}
 }
 
 void Geometry::SetVisibility(RENDER_LAYER layer, bool state)
@@ -99,16 +116,8 @@ unordered_map<string, shared_ptr<PolySurface>> Geometry::GetPolySurfaces()
 
 void Geometry::UpdateAttributes()
 {
-	GameObject::UpdateAttributes();
-
-	if(m_material)
-		m_material->UpdateAttributes();
 }
 
 void Geometry::RenderAttributes()
 {
-	GameObject::RenderAttributes();
-
-	if(m_material)
-		m_material->RenderAttributes();
 }

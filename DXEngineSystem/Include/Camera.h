@@ -2,12 +2,6 @@
 #include "GameObject.h"
 #include "CameraShape.h"
 
-enum class PROJECTION_TYPE
-{
-	PERSPECTIVE = 0,
-	ORTHOGONAL,
-};
-
 class Camera : public GameObject
 {
 public:
@@ -15,14 +9,14 @@ public:
 	virtual ~Camera();
 
 public:
-	virtual void Init() override;
-	virtual void Update() override;
-	virtual void Render() override;
-	virtual void PostUpdate() override;
+	virtual void Init();
+	virtual void Update();
+	virtual void Render();
+	virtual void PostUpdate();
 
 public:
-	virtual void UpdateAttributes() override;
-	virtual void RenderAttributes() override;
+	void UpdateAttributes();
+	void RenderAttributes();
 
 public:
 	void Dolly(float factor);		//  Translate	Y
@@ -53,13 +47,13 @@ private:
 private:
 	PROJECTION_TYPE m_projectionType;
 
-	XMMATRIX	m_view;
-	XMMATRIX	m_projection;
-	XMMATRIX	m_viewProjection;
+	XMMATRIX		m_view;
+	XMMATRIX		m_projection;
+	XMMATRIX		m_viewProjection;
 
-	XMFLOAT4	m_fogColor;
-	float		m_fogStart;
-	float		m_fogEnd;
+	XMFLOAT4		m_fogColor;
+	float			m_fogStart;
+	float			m_fogEnd;
 
 private:
 	shared_ptr<CameraShape>				m_cameraShape;

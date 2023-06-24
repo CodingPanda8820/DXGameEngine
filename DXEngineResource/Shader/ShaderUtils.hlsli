@@ -6,9 +6,8 @@
 
 Texture2D	 gDiffuseTexture2D		: register(t0);
 Texture2D	 gSpecularTexture2D		: register(t1);
-Texture2D	 gAmbientTexture2D		: register(t2);
-Texture2D	 gShininessTexture2D	: register(t3);
-Texture2D	 gNormalTexture2D		: register(t4);
+Texture2D	 gShininessTexture2D	: register(t2);
+Texture2D	 gNormalTexture2D		: register(t3);
 
 SamplerState gsamPointWrap			: register(s0);
 SamplerState gsamPointClamp			: register(s1);
@@ -16,6 +15,7 @@ SamplerState gsamLinearWrap			: register(s2);
 SamplerState gsamLinearClamp		: register(s3);
 SamplerState gsamAnisotropicWrap	: register(s4);
 SamplerState gsamAnisotropicClamp	: register(s5);
+SamplerComparisonState gsamShadow	: register(s6);
 
 cbuffer cbGameObject : register(b0)
 {
@@ -25,13 +25,12 @@ cbuffer cbGameObject : register(b0)
 cbuffer cbMaterial : register(b1)
 {
 	float4	 gDiffuse;
-	float4	 gSpecular;
+	float3	 gSpecular;
+	float	 gShininess;
 	float4	 gAmbient;
-	float4	 gShininess;
 
 	int		 gDiffuseTextureOn;
 	int		 gSpecularTextureOn;
-	int		 gAmbientTextureOn;
 	int		 gShininessTextureOn;
 	int		 gNormalTextureOn;
 
@@ -44,6 +43,11 @@ cbuffer cbMaterial : register(b1)
 	float	 gUserDataFloat_1;
 	float	 gUserDataFloat_2;
 	float	 gUserDataFloat_3;
+
+	float4x4 gUserDataMatrix_0;
+	float4x4 gUserDataMatrix_1;
+	float4x4 gUserDataMatrix_2;
+	float4x4 gUserDataMatrix_3;
 };
 
 cbuffer cbLightGroup : register(b2)
@@ -54,8 +58,11 @@ cbuffer cbLightGroup : register(b2)
 cbuffer cbCamera : register(b3)
 {
 	float4x4  gView;
+	float4x4  gViewInv;
 	float4x4  gProjection;
+	float4x4  gProjectionInv;
 	float4x4  gViewProjection;
+	float4x4  gViewProjectionInv;
 
 	float3	  gEyePosWorld;
 	float	  gEyePosWorldPad1;
