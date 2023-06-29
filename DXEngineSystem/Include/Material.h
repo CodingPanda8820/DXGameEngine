@@ -34,6 +34,7 @@ public:
 	void SetTexture(uint8 registerID, shared_ptr<Texture> texture);
 	void SetUserDataInt(uint8 index, uint32 value);
 	void SetUserDataFloat(uint8 index, float value);
+	void SetUserDataMatrix(uint8 index, XMFLOAT4X4 matrix);
 
 public:
 	string		GetName();
@@ -45,6 +46,7 @@ public:
 
 	uint32		GetUserDataInt(uint8 index);
 	float		GetUserDataFloat(uint8 index);
+	XMFLOAT4X4	GetUserDataMatrix(uint8 index);
 
 public:
 	unique_ptr<UploadBuffer<CBMaterial>> m_attributes;

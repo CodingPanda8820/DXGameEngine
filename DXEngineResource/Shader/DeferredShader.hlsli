@@ -9,8 +9,8 @@ struct VertexIn
 
 struct VertexOut
 {
-	float4 PositionWVP	: SV_Position;
-	float3 PositionW	: POSITION;
+	float4 PositionH	: SV_Position;
+	float4 PositionW	: POSITION;
 	float3 NormalW		: NORMAL;
 	float2 UV			: TEXCOORD;
 };
@@ -22,8 +22,8 @@ VertexOut VS_Main(VertexIn vin)
 	float4 PositionW = mul(float4(vin.PositionL, 1.0f), gWorld);
 	float3 NormalW = normalize(mul(float4(vin.NormalL, 0.0f), gWorld)).xyz;
 
-	vout.PositionWVP = mul(PositionW, gViewProjection);
-	vout.PositionW = PositionW.xyz;
+	vout.PositionH = mul(PositionW, gViewProjection);
+	vout.PositionW = PositionW;
 	vout.NormalW = normalize(NormalW.xyz);
 	vout.UV = vin.UV;
 
@@ -60,7 +60,7 @@ PixelOut PS_Main(VertexOut pin)
 	if (gShininessTextureOn)
 		shininess = gShininessTexture2D.Sample(gsamAnisotropicWrap, pin.UV).x * gShininess;
 
-	pout.Position = float4(pin.PositionW.xyz, 0.0f);
+	pout.Position = float4(pin.PositionW.xyz, pin.PositionH.z / pin.PositionH.w);
 	pout.DiffuseAndSpecular = float4(diffuse.xyz, specular.x);
 	pout.NormalAndShininess = float4(normal.xyz, shininess.x);
 

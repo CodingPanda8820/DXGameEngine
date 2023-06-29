@@ -184,12 +184,17 @@ void Shader::SetRasterizerType(RASTERIZER_TYPE type)
 		m_rasterizerDesc.FillMode = D3D12_FILL_MODE_WIREFRAME;
 		m_rasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;
 		break;
+	case  RASTERIZER_TYPE::CULL_BACK_DEPTH_BIAS:
+		m_rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
+		m_rasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
+		break;
+	default:
+		break;
 	}
 }
 
 void Shader::SetDepthStencilType(DEPTH_STENCIL_TYPE type)
 {
-
 	switch (type)
 	{
 	case DEPTH_STENCIL_TYPE::LESS:

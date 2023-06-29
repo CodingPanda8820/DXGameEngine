@@ -96,6 +96,11 @@ void Material::SetUserDataFloat(uint8 index, float value)
 	m_userDataFloat[index] = value;
 }
 
+void Material::SetUserDataMatrix(uint8 index, XMFLOAT4X4 matrix)
+{
+	m_userDataMatrix[index] = matrix;
+}
+
 string Material::GetName()
 {
 	return m_name;
@@ -131,6 +136,11 @@ float Material::GetUserDataFloat(uint8 index)
 	return m_userDataFloat[index];
 }
 
+XMFLOAT4X4 Material::GetUserDataMatrix(uint8 index)
+{
+	return m_userDataMatrix[index];
+}
+
 void Material::UpdateAttributes()
 {
 	CBMaterial attributes;
@@ -154,10 +164,10 @@ void Material::UpdateAttributes()
 	attributes.UserDataFloat_2 = m_userDataFloat[2];
 	attributes.UserDataFloat_3 = m_userDataFloat[3];
 
-	attributes.UserDataMatrix_0 = m_userDataMatrix[0];
-	attributes.UserDataMatrix_1 = m_userDataMatrix[1];
-	attributes.UserDataMatrix_2 = m_userDataMatrix[2];
-	attributes.UserDataMatrix_3 = m_userDataMatrix[3];
+	XMStoreFloat4x4(&attributes.UserDataMatrix_0, XMMatrixTranspose(XMLoadFloat4x4(&m_userDataMatrix[0])));
+	XMStoreFloat4x4(&attributes.UserDataMatrix_1, XMMatrixTranspose(XMLoadFloat4x4(&m_userDataMatrix[1])));
+	XMStoreFloat4x4(&attributes.UserDataMatrix_2, XMMatrixTranspose(XMLoadFloat4x4(&m_userDataMatrix[2])));
+	XMStoreFloat4x4(&attributes.UserDataMatrix_3, XMMatrixTranspose(XMLoadFloat4x4(&m_userDataMatrix[3])));
 
 	m_attributes->CopyData(0, attributes);
 }

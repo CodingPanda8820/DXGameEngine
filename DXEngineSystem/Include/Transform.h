@@ -71,8 +71,8 @@ public:
 	XMMATRIX	GetWorldTransformMatrix();
 	XMFLOAT4X4	GetWorldViewTransformFloat4x4();
 	XMMATRIX	GetWorldViewTransformMatrix();
-	XMFLOAT4X4	GetWorldProjectionTransformFloat4x4(float fovY, float resW, float resH, float nearZ, float farZ, PROJECTION_TYPE projectionType);
-	XMMATRIX	GetWorldProjectionTransformMatrix(float fovY, float resW, float resH, float nearZ, float farZ, PROJECTION_TYPE projectionType);
+	XMFLOAT4X4	GetWorldProjectionTransformFloat4x4(float fovY, float resW, float resH, float nearZ, float farZ, PROJECTION_TYPE projectionType = PROJECTION_TYPE::PERSPECTIVE);
+	XMMATRIX	GetWorldProjectionTransformMatrix(float fovY, float resW, float resH, float nearZ, float farZ, PROJECTION_TYPE projectionType = PROJECTION_TYPE::PERSPECTIVE);
 
 	shared_ptr<Transform> GetParent();
 	void SetParent(shared_ptr<Transform> parent);
@@ -80,7 +80,6 @@ public:
 
 private:
 	void UpdateLocalTransform();
-	void UpdateLocal();
 
 private:
 	string		m_name;

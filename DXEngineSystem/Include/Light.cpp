@@ -29,11 +29,10 @@ void Light::Update()
 
 void Light::Render(OBJECT_RENDER_TYPE type)
 {
-	GameObject::Render(type);
-
 	switch (type)
 	{
 	case OBJECT_RENDER_TYPE::OBJECT:
+		GameObject::Render(type);
 		RenderObject();
 		break;
 	case OBJECT_RENDER_TYPE::SHADOW:
@@ -46,7 +45,8 @@ void Light::Render(OBJECT_RENDER_TYPE type)
 
 void Light::RenderObject()
 {
-	m_material->SetUserDataInt(1, m_lightIndex);
+	UpdateLightMaterial();
+
 	m_material->UpdateAttributes();
 	m_material->RenderAttributes();
 
@@ -56,6 +56,7 @@ void Light::RenderObject()
 
 void Light::RenderShadow()
 {
+	UpdateLightMaterial(OBJECT_RENDER_TYPE::SHADOW);
 }
 
 void Light::PostUpdate()
@@ -191,6 +192,44 @@ float Light::GetFalloffEnd()
 shared_ptr<LightShape> Light::GetLightShape()
 {
 	return m_lightShape;
+}
+
+void Light::UpdateLightMaterial(OBJECT_RENDER_TYPE type)
+{
+	shared_ptr<Material> material = make_shared<Material>();
+
+	switch (type)
+	{
+	case OBJECT_RENDER_TYPE::OBJECT:
+		material = m_material;
+		break;
+	case OBJECT_RENDER_TYPE::SHADOW:
+		material = m_material_shadow;
+		break;
+	default:
+		break;
+	}
+
+	material->SetUserDataInt(1, m_lightIndex);
+
+	float fovY = 0.25 * EngineMath::Pi;
+
+	float Width = EngineSystem::GetInst()->GetMultiRenderTarget(RENDER_TARGET_TYPE::SHADOW)->GetRenderTarget(0)->GetTextureWidth();
+	float Height = EngineSystem::GetInst()->GetMultiRenderTarget(RENDER_TARGET_TYPE::SHADOW)->GetRenderTarget(0)->GetTextureHeight();
+
+	XMFLOAT4X4 xformView = m_transform->GetWorldViewTransformFloat4x4();
+	material->SetUserDataMatrix(0, xformView);
+
+	XMFLOAT4X4 xformProjection = m_transform->GetWorldProjectionTransformFloat4x4(fovY, Width, Height, 0.001f, 1000.0f);
+	material->SetUserDataMatrix(1, xformProjection);
+
+	XMVECTOR xformViewDeterminant = XMMatrixDeterminant(XMLoadFloat4x4(&xformView));
+	XMMATRIX xformViewInverse = XMMatrixInverse(&xformViewDeterminant, XMLoadFloat4x4(&xformView));
+	XMStoreFloat4x4(&material->GetUserDataMatrix(2), xformViewInverse);
+
+	XMVECTOR xformProjectionDeterminant = XMMatrixDeterminant(XMLoadFloat4x4(&xformProjection));
+	XMMATRIX xformProjectionInverse = XMMatrixInverse(&xformProjectionDeterminant, XMLoadFloat4x4(&xformProjection));
+	XMStoreFloat4x4(&material->GetUserDataMatrix(2), xformProjectionInverse);
 }
 
 void Light::UpdateAttributes()

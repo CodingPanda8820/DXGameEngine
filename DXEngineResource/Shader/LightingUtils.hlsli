@@ -25,7 +25,7 @@ struct Material
 	float	Specular;
 	float	Shininess;
 	float3	Normal;
-	float3	Position;
+	float4	Position;
 };
 
 float GetAttenuation(float d, float falloffStart, float falloffEnd)

@@ -48,21 +48,27 @@ VertexOut VS_DirectionalLight(uint VertexID : SV_VertexID)
 
 PixelOut PS_DirectionalLight(VertexOut pin)
 {
-	Material material = (Material)0;
-	material.Position = gShininessTexture2D.Sample(gsamLinearClamp, pin.uv).xyz;
-	material.Diffuse = gDiffuseTexture2D.Sample(gsamLinearClamp, pin.uv).xyz;
-	material.Specular = gDiffuseTexture2D.Sample(gsamLinearClamp, pin.uv).w;
-	material.Shininess = gSpecularTexture2D.Sample(gsamLinearClamp, pin.uv).w;
-	material.Normal = gSpecularTexture2D.Sample(gsamLinearClamp, pin.uv).xyz;
+	Material material	= (Material)0;
+	material.Position	= gShininessTexture2D.Sample(gsamLinearClamp, pin.uv);
+	material.Diffuse	= gDiffuseTexture2D.Sample(gsamLinearClamp, pin.uv).xyz;
+	material.Specular	= gDiffuseTexture2D.Sample(gsamLinearClamp, pin.uv).w;
+	material.Shininess	= gSpecularTexture2D.Sample(gsamLinearClamp, pin.uv).w;
+	material.Normal		= gSpecularTexture2D.Sample(gsamLinearClamp, pin.uv).xyz;
 
+	if (length(material.Diffuse) == 0.0f)
+		clip(-1);
+
+	//	Light : Diffuse & Specular
 	int		lightIndex = gUserDataInt_1;
 	float3	toEye = normalize(gEyePosWorld - material.Position);
-
 	LightColor color = ComputeDirectionalLight(gLights[lightIndex], material, toEye);
 
+	//	Light : Shadow
+	float shadowFactor = GetShadowFactor(material.Position, gUserDataMatrix_0, gUserDataMatrix_1);
+
 	PixelOut pout = (PixelOut)0;
-	pout.diffuse = float4(color.diffuse, 1.0f);
-	pout.specular = float4(color.specular, 1.0f);
+	pout.diffuse = float4(color.diffuse, 1.0f) * shadowFactor;
+	pout.specular = float4(color.specular, 1.0f) * shadowFactor;
 
 	return pout;
 }
@@ -82,7 +88,7 @@ VertexOut VS_PointLight(uint VertexID : SV_VertexID)
 PixelOut PS_PointLight(VertexOut pin)
 {
 	Material material = (Material)0;
-	material.Position = gShininessTexture2D.Sample(gsamLinearClamp, pin.uv).xyz;
+	material.Position = gShininessTexture2D.Sample(gsamLinearClamp, pin.uv);
 	material.Diffuse = gDiffuseTexture2D.Sample(gsamLinearClamp, pin.uv).xyz;
 	material.Specular = gDiffuseTexture2D.Sample(gsamLinearClamp, pin.uv).w;
 	material.Shininess = gSpecularTexture2D.Sample(gsamLinearClamp, pin.uv).w;
@@ -122,7 +128,7 @@ float4 PS_AmbientLight(VertexOut pin) : SV_Target
 	float4 diffuseLight = gSpecularTexture2D.Sample(gsamPointWrap, pin.uv);
 	float4 SpecularLight = gShininessTexture2D.Sample(gsamPointWrap, pin.uv);
 
-	float4 finalColor = ambientLight + diffuseLight + SpecularLight;
+	float4 finalColor = ambientLight + (SpecularLight * diffuseLight);
 
 	if (finalColor.x == 0.0f && finalColor.y == 0.0f && finalColor.z == 0.0f)
 		clip(-1);

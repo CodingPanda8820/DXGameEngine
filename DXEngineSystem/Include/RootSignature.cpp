@@ -44,7 +44,7 @@ void RootSignature::BuildRootSignature(ComPtr<ID3D12Device> device)
 
 	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc;
 	rootSignatureDesc.Init(_countof(rootParms), rootParms, (UINT)staticSamplers.size(), staticSamplers.data(),
-		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+						D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
 	ComPtr<ID3DBlob> errorBlob = nullptr;
 	ComPtr<ID3DBlob> serializeRootSignature = nullptr;

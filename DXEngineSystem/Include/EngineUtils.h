@@ -25,7 +25,7 @@ struct CBGameObject
 	XMFLOAT4X4 World = EngineMath::Identity4x4();
 };
 
-#define MAX_USER_DATA_INT			4
+#define MAX_USER_DATA_INT		4
 #define MAX_USER_DATA_FLOAT		4
 #define MAX_USER_DATA_MATRIX	4
 struct CBMaterial

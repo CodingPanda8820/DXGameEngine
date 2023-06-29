@@ -30,22 +30,24 @@ public:
 	void SetSpotPower(float value);
 
 public:
-	string		GetName();
-	LIGHT_TYPE	GetLightType();
-	uint32		GetLightIndex();
-	XMFLOAT3	GetStrength();
-	XMFLOAT3	GetPosition();
-	XMFLOAT3	GetDirection();
+	string					GetName();
+	LIGHT_TYPE				GetLightType();
+	uint32					GetLightIndex();
+	XMFLOAT3				GetStrength();
+	XMFLOAT3				GetPosition();
+	XMFLOAT3				GetDirection();
 
-	float		GetSpotPower();
-	float		GetFalloffStart();
-	float		GetFalloffEnd();
+	float					GetSpotPower();
+	float					GetFalloffStart();
+	float					GetFalloffEnd();
 
 	shared_ptr<Material>	GetMaterial();
 	shared_ptr<LightShape>	GetLightShape();
 	shared_ptr<PolySurface> GetVolumeShape();
 
 private:
+	void UpdateLightMaterial(OBJECT_RENDER_TYPE type = OBJECT_RENDER_TYPE::OBJECT);
+
 	void UpdateAttributes();
 	void RenderAttributes();
 

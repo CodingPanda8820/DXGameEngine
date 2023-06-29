@@ -213,10 +213,10 @@ bool ResourceManager::Init()
 	m_materials["MAT_AmbientLight"]->SetShininess(0.0f);
 	m_materials["MAT_AmbientLight"]->SetSpecular(0.0f, 0.0f, 0.0f);
 	m_materials["MAT_AmbientLight"]->SetUserDataInt(0, static_cast<uint32>(LIGHT_TYPE::AMBIENT));
-	m_materials["MAT_AmbientLight"]->SetTexture(TREGISTER_TYPE::DIFFUSE_TEXTURE2D, m_textures["DRT_DiffuseAndSpecular"]);
-	m_materials["MAT_AmbientLight"]->SetTexture(TREGISTER_TYPE::SPECULAR_TEXTURE2D, m_textures["DRT_DiffuseLight"]);
+	m_materials["MAT_AmbientLight"]->SetTexture(TREGISTER_TYPE::DIFFUSE_TEXTURE2D,	 m_textures["DRT_DiffuseAndSpecular"]);
+	m_materials["MAT_AmbientLight"]->SetTexture(TREGISTER_TYPE::SPECULAR_TEXTURE2D,	 m_textures["DRT_DiffuseLight"]);
 	m_materials["MAT_AmbientLight"]->SetTexture(TREGISTER_TYPE::SHININESS_TEXTURE2D, m_textures["DRT_SpecularLight"]);
-	m_materials["MAT_AmbientLight"]->SetTexture(TREGISTER_TYPE::NORMAL_TEXTURE2D, m_textures["DRT_Shadow"]);
+	m_materials["MAT_AmbientLight"]->SetTexture(TREGISTER_TYPE::NORMAL_TEXTURE2D,	 m_textures["DRT_Shadow"]);
 
 	NewMaterial("MAT_DirectionalLight");
 	m_materials["MAT_DirectionalLight"]->SetAmbient(1.0f, 1.0f, 1.0f, 1.0f);
@@ -224,9 +224,10 @@ bool ResourceManager::Init()
 	m_materials["MAT_DirectionalLight"]->SetShininess(0.5f);
 	m_materials["MAT_DirectionalLight"]->SetSpecular(1.0f, 1.0f, 1.0f);
 	m_materials["MAT_DirectionalLight"]->SetUserDataInt(0, static_cast<uint32>(LIGHT_TYPE::DIRECTIONAL));
-	m_materials["MAT_DirectionalLight"]->SetTexture(TREGISTER_TYPE::DIFFUSE_TEXTURE2D, m_textures["DRT_DiffuseAndSpecular"]);
-	m_materials["MAT_DirectionalLight"]->SetTexture(TREGISTER_TYPE::SPECULAR_TEXTURE2D, m_textures["DRT_NormalAndShininess"]);
+	m_materials["MAT_DirectionalLight"]->SetTexture(TREGISTER_TYPE::DIFFUSE_TEXTURE2D,	 m_textures["DRT_DiffuseAndSpecular"]);
+	m_materials["MAT_DirectionalLight"]->SetTexture(TREGISTER_TYPE::SPECULAR_TEXTURE2D,  m_textures["DRT_NormalAndShininess"]);
 	m_materials["MAT_DirectionalLight"]->SetTexture(TREGISTER_TYPE::SHININESS_TEXTURE2D, m_textures["DRT_Position"]);
+	m_materials["MAT_DirectionalLight"]->SetTexture(TREGISTER_TYPE::NORMAL_TEXTURE2D,	 m_textures["DRT_Shadow"]);
 
 	NewMaterial("MAT_SpotLight");
 	m_materials["MAT_SpotLight"]->SetAmbient(0.0f, 0.0f, 0.0f, 0.0f);

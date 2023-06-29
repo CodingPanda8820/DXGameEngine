@@ -64,17 +64,7 @@ void Scene::Render(const float& deltaTime)
 	EngineSystem::GetInst()->GetMultiRenderTarget(RENDER_TARGET_TYPE::GBUFFER)->WaitSync(cmdList, WAIT_SYNC_TYPE::RENDER_TARGET_TO_RESOURCE);
 
 	//	Deferred Shadow
-	EngineSystem::GetInst()->GetMultiRenderTarget(RENDER_TARGET_TYPE::SHADOW)->ClearRenderTargetViews(cmdList);
-	EngineSystem::GetInst()->GetMultiRenderTarget(RENDER_TARGET_TYPE::SHADOW)->OMSetRenderTargets(cmdList);
-	for (auto light : m_lightGroup->GetLights(LIGHT_TYPE::DIRECTIONAL))
-	{
-		for (shared_ptr<Geometry> geometry : m_renderLayers_deferred[RENDER_LAYER_ID(RENDER_LAYER::SRGB)])
-		{
-			geometry->Render(OBJECT_RENDER_TYPE::SHADOW);
-		}
-	}
-
-	EngineSystem::GetInst()->GetMultiRenderTarget(RENDER_TARGET_TYPE::SHADOW)->WaitSync(cmdList, WAIT_SYNC_TYPE::RENDER_TARGET_TO_RESOURCE);
+	RenderShadow();
 
 	//	Deferred Lighting
 	EngineSystem::GetInst()->GetMultiRenderTarget(RENDER_TARGET_TYPE::LIGHTING)->ClearRenderTargetViews(cmdList);
@@ -118,7 +108,9 @@ void Scene::InitCamera()
 #pragma region Camera
 	m_cameras["Main"] = make_shared<Camera>(PROJECTION_TYPE::PERSPECTIVE);
 	m_cameras["Main"]->Init();
+	//m_cameras["Main"]->GetTransform()->SetTranslate(0.0f, 30.0f, 0.0f);
 	m_cameras["Main"]->GetTransform()->SetTranslate(0.0f, 0.0f, -40.0f);
+	//m_cameras["Main"]->GetTransform()->SetRotate(90.0f, 0.0f, 0.0f);
 	m_cameras["Main"]->GetTransform()->SetRotate(0.0f, 0.0f, 0.0f);
 
 	m_cameras["UICamera"] = make_shared<Camera>(PROJECTION_TYPE::ORTHOGONAL);
@@ -132,10 +124,12 @@ void Scene::InitLightGroup()
 #pragma region LightGroup
 	m_lightGroup->Init();
 	m_lightGroup->AddLight("Ambient", LIGHT_TYPE::AMBIENT);
-	m_lightGroup->GetLight("Ambient")->SetStrength(1.0f, 1.0f, 1.0f);
+	m_lightGroup->GetLight("Ambient")->SetStrength(0.5f, 0.5f, 0.5f);
 	m_lightGroup->AddLight("Directional", LIGHT_TYPE::DIRECTIONAL);
+	m_lightGroup->GetLight("Directional")->SetMaterial("MAT_Shadow", OBJECT_RENDER_TYPE::SHADOW);
 	m_lightGroup->GetLight("Directional")->SetStrength(0.48f, 0.48f, 0.48f);
-	m_lightGroup->GetLight("Directional")->SetRotate(90.0f, 0.0f, 45.0f);
+	m_lightGroup->GetLight("Directional")->SetRotate(90.0f, 0.0f, 0.0f);
+	m_lightGroup->GetLight("Directional")->SetTranslate(0.0f, 50.0f, 0.0f);
 #pragma endregion
 }
 
@@ -241,6 +235,44 @@ void Scene::InitGeometries()
 	m_geometries["Grid"]->GetTransform()->SetScale(5.0f, 5.0f, 5.0f);
 	m_renderLayers_deferred[RENDER_LAYER_ID(RENDER_LAYER::SRGB)].push_back(m_geometries["Grid"]);
 #pragma endregion
+}
+
+void Scene::RenderDeferred()
+{
+}
+
+void Scene::RenderLighting()
+{
+}
+
+void Scene::RenderShadow()
+{
+	ComPtr<ID3D12GraphicsCommandList>	cmdList	= EngineSystem::GetInst()->GetCmdList();
+	shared_ptr<MultiRenderTarget> rendertargets = EngineSystem::GetInst()->GetMultiRenderTarget(RENDER_TARGET_TYPE::SHADOW);
+
+	//	Deferred Shadow
+	rendertargets->ClearRenderTargetViews(cmdList);
+	rendertargets->OMSetRenderTargets(cmdList);
+
+	for (auto light : m_lightGroup->GetLights(LIGHT_TYPE::DIRECTIONAL))
+	{
+		light->Render(OBJECT_RENDER_TYPE::SHADOW);
+
+		for (shared_ptr<Geometry> geometry : m_renderLayers_deferred[RENDER_LAYER_ID(RENDER_LAYER::SRGB)])
+		{
+			geometry->Render(OBJECT_RENDER_TYPE::SHADOW);
+		}
+	}
+
+	rendertargets->WaitSync(cmdList, WAIT_SYNC_TYPE::RENDER_TARGET_TO_RESOURCE);
+}
+
+void Scene::RenderForward()
+{
+}
+
+void Scene::RenderGameUI()
+{
 }
 
 void Scene::SetCameraToObserver(const string& name)

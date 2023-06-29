@@ -28,7 +28,7 @@ void GameObject::Render(OBJECT_RENDER_TYPE type)
 	{
 	case OBJECT_RENDER_TYPE::OBJECT:
 		RenderObject();
-		break;
+		break;	
 	case OBJECT_RENDER_TYPE::SHADOW:
 		RenderShadow();
 		break;

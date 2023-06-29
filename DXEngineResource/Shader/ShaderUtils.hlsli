@@ -97,3 +97,62 @@ float3 NormalSampleToWorldSpace(float3 normalMapSample, float3 unitNormalW, floa
 
 	return bumpedNormalW;
 }
+
+//float GetShadowFactor(float4 positionW, float4x4 xformV, float4x4 xformP)
+//{
+//	uint width, height, numMips;
+//	gNormalTexture2D.GetDimensions(0, width, height, numMips);
+//
+//	float dx = 1.0f / (float)width;
+//	const float2 offsets[9] =
+//	{
+//		float2(-dx, -dx),	float2(0.0f, -dx),	float2(+dx, -dx),
+//		float2(-dx, 0.0f),	float2(0.0f, 0.0f),	float2(+dx, 0.0f),
+//		float2(-dx, +dx),	float2(0.0f, +dx),	float2(+dx, +dx),
+//	};
+//
+//	float4 shadowV	= mul(float4(positionW.xyz, 1.0f), xformV);
+//	float4 shadowH	= mul(shadowV, xformP);
+//
+//	float lightPercent = 0.0f;	
+//
+//	[unroll]
+//	for (int i = 0; i < 9; ++i)
+//	{
+//		lightPercent += gNormalTexture2D.SampleCmpLevelZero(gsamShadow, shadowH.xy + offsets[i], shadowH.z / shadowH.w).r;
+//	}
+//
+//	//return lightPercent / 9.0f;
+//	return shadowH.z / shadowH.w;
+//}
+
+float GetShadowFactor(float4 positionW, float4x4 xformV, float4x4 xformP)
+{
+	uint width, height, numMips;
+	gNormalTexture2D.GetDimensions(0, width, height, numMips);
+
+	float dx = 1.0f / (float)width;
+	const float2 offsets[9] =
+	{
+		float2(-dx, -dx),	float2(0.0f, -dx),	float2(+dx, -dx),
+		float2(-dx, 0.0f),	float2(0.0f, 0.0f),	float2(+dx, 0.0f),
+		float2(-dx, +dx),	float2(0.0f, +dx),	float2(+dx, +dx),
+	};
+
+	//	텍스처 변환 행렬을 곱한 후에는 반드시 원근 나누기를 수행해야 한다.
+	float4 shadowH	= mul(mul(float4(positionW.xyz, 1.0f), xformV), xformP);
+	float3 shadowUVD = shadowH.xyz / shadowH.w;
+
+	shadowUVD.xy = (shadowUVD.xy + 1.0f) * 0.5f;
+	shadowUVD.y = 1.0 - shadowUVD.y;
+
+	float lightPercent = 0.0f;	
+
+	[unroll]
+	for (int i = 0; i < 9; ++i)
+	{
+		lightPercent += gNormalTexture2D.SampleCmpLevelZero(gsamShadow, shadowUVD.xy + offsets[i], shadowUVD.z - 0.0000001f).r;
+	}
+
+	return lightPercent / 9.0f;
+}

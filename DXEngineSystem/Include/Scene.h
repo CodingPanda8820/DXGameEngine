@@ -26,6 +26,7 @@ private:
 private:
 	void RenderDeferred();
 	void RenderLighting();
+	void RenderShadow();
 	void RenderForward();
 	void RenderGameUI();
 
