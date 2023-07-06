@@ -48,6 +48,8 @@ cbuffer cbMaterial : register(b1)
 	float4x4 gUserDataMatrix_1;
 	float4x4 gUserDataMatrix_2;
 	float4x4 gUserDataMatrix_3;
+
+	float4	 gUserDataFloat4s[16];
 };
 
 cbuffer cbLightGroup : register(b2)
@@ -98,34 +100,6 @@ float3 NormalSampleToWorldSpace(float3 normalMapSample, float3 unitNormalW, floa
 	return bumpedNormalW;
 }
 
-//float GetShadowFactor(float4 positionW, float4x4 xformV, float4x4 xformP)
-//{
-//	uint width, height, numMips;
-//	gNormalTexture2D.GetDimensions(0, width, height, numMips);
-//
-//	float dx = 1.0f / (float)width;
-//	const float2 offsets[9] =
-//	{
-//		float2(-dx, -dx),	float2(0.0f, -dx),	float2(+dx, -dx),
-//		float2(-dx, 0.0f),	float2(0.0f, 0.0f),	float2(+dx, 0.0f),
-//		float2(-dx, +dx),	float2(0.0f, +dx),	float2(+dx, +dx),
-//	};
-//
-//	float4 shadowV	= mul(float4(positionW.xyz, 1.0f), xformV);
-//	float4 shadowH	= mul(shadowV, xformP);
-//
-//	float lightPercent = 0.0f;	
-//
-//	[unroll]
-//	for (int i = 0; i < 9; ++i)
-//	{
-//		lightPercent += gNormalTexture2D.SampleCmpLevelZero(gsamShadow, shadowH.xy + offsets[i], shadowH.z / shadowH.w).r;
-//	}
-//
-//	//return lightPercent / 9.0f;
-//	return shadowH.z / shadowH.w;
-//}
-
 float GetShadowFactor(float4 positionW, float4x4 xformV, float4x4 xformP)
 {
 	uint width, height, numMips;
@@ -147,11 +121,13 @@ float GetShadowFactor(float4 positionW, float4x4 xformV, float4x4 xformP)
 	shadowUVD.y = 1.0 - shadowUVD.y;
 
 	float lightPercent = 0.0f;	
+	//float shadowOffset = 0.000000275;
+	float shadowOffset = 0.0000003;
 
 	[unroll]
 	for (int i = 0; i < 9; ++i)
 	{
-		lightPercent += gNormalTexture2D.SampleCmpLevelZero(gsamShadow, shadowUVD.xy + offsets[i], shadowUVD.z - 0.0000001f).r;
+		lightPercent += gNormalTexture2D.SampleCmpLevelZero(gsamShadow, shadowUVD.xy + offsets[i], shadowUVD.z - shadowOffset).r;
 	}
 
 	return lightPercent / 9.0f;

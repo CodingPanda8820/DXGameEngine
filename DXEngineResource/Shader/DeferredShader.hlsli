@@ -4,6 +4,7 @@ struct VertexIn
 {
 	float3	PositionL	: POSITION;
 	float3	NormalL		: NORMAL;
+	float3	TangentU	: TANGENT;
 	float2	UV			: TEXCOORD;
 };
 
@@ -12,6 +13,7 @@ struct VertexOut
 	float4 PositionH	: SV_Position;
 	float4 PositionW	: POSITION;
 	float3 NormalW		: NORMAL;
+	float3 TangentW		: TANGENT;
 	float2 UV			: TEXCOORD;
 };
 
@@ -24,6 +26,7 @@ VertexOut VS_Main(VertexIn vin)
 
 	vout.PositionH = mul(PositionW, gViewProjection);
 	vout.PositionW = PositionW;
+	vout.TangentW = mul(vin.TangentU, (float3x3)gWorld);
 	vout.NormalW = normalize(NormalW.xyz);
 	vout.UV = vin.UV;
 
@@ -35,6 +38,7 @@ struct PixelOut
 	float4 Position			  : SV_Target0;
 	float4 DiffuseAndSpecular : SV_Target1;
 	float4 NormalAndShininess : SV_Target2;
+	float4 Depth			  : SV_Target3;
 };
 
 PixelOut PS_Main(VertexOut pin)
@@ -52,17 +56,20 @@ PixelOut PS_Main(VertexOut pin)
 	float3 normal = pin.NormalW;
 	if (gNormalTextureOn)
 	{
-		float3 normalTexture2D = gNormalTexture2D.Sample(gsamLinearWrap, pin.UV).xyz;
-		normal = (normalTexture2D + 1.0f) * 0.5f;
+		float3 normalSample = gNormalTexture2D.Sample(gsamLinearWrap, pin.UV).xyz;
+		normal = NormalSampleToWorldSpace(normalSample, pin.NormalW, pin.TangentW);
 	}
 
 	float shininess = gShininess;
 	if (gShininessTextureOn)
 		shininess = gShininessTexture2D.Sample(gsamAnisotropicWrap, pin.UV).x * gShininess;
 
-	pout.Position = float4(pin.PositionW.xyz, pin.PositionH.z / pin.PositionH.w);
+	float depth = pin.PositionH.z / pin.PositionH.w;
+
+	pout.Position = float4(pin.PositionW.xyz, depth);
 	pout.DiffuseAndSpecular = float4(diffuse.xyz, specular.x);
 	pout.NormalAndShininess = float4(normal.xyz, shininess.x);
+	pout.Depth = float4(depth, depth, depth, 1.0f);
 
 	return pout;
-}
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             

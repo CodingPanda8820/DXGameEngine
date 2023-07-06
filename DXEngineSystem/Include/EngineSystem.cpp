@@ -167,6 +167,11 @@ void EngineSystem::CreateDeferredRenderTargets(WindowInfo wndInfo)
 			D3D12_HEAP_FLAG_NONE, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
 		rtGBuffer[2].Texture = ResourceManager::GetInst()->FindTexture("DRT_NormalAndShininess");
 
+		ResourceManager::GetInst()->NewTexture("DRT_Depth", GetDevice(), DXGI_FORMAT_R32G32B32A32_FLOAT,
+			wndInfo.Width, wndInfo.Height, CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+			D3D12_HEAP_FLAG_NONE, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
+		rtGBuffer[3].Texture = ResourceManager::GetInst()->FindTexture("DRT_Depth");
+
 		m_multiRenderTargets[static_cast<uint8>(RENDER_TARGET_TYPE::GBUFFER)] = make_shared<MultiRenderTarget>();
 		m_multiRenderTargets[static_cast<uint8>(RENDER_TARGET_TYPE::GBUFFER)]->Create(GetDevice(), RENDER_TARGET_TYPE::GBUFFER, rtGBuffer, dsTexture);
 	}

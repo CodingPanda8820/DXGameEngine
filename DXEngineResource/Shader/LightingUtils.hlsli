@@ -28,9 +28,67 @@ struct Material
 	float4	Position;
 };
 
+static const float4x4 NTexCoord =
+float4x4(+0.5f, +0.0f, +0.0f, +0.0f,
+	+0.0f, -0.5f, +0.0f, +0.0f,
+	+0.0f, +0.0f, +1.0f, +0.0f,
+	+0.5f, +0.5f, +0.0f, +1.0f);
+
 float GetAttenuation(float d, float falloffStart, float falloffEnd)
 {
 	return saturate((falloffEnd - d) / (falloffEnd - falloffStart));
+}
+
+float ConvertDepthFromNDCToView(float NDCz, float4x4 xformProjection)
+{
+	float viewZ = xformProjection[3][2] / (NDCz - xformProjection[2][2]);
+
+	return viewZ;
+}
+
+//	normal : normal in view space
+//	depth  : depth in view space
+float GetOcclusion(float fadeStart, float fadeEnd, float distZ, float surfaceEpsilon)
+{
+	float occlusion = 0.0f;
+	if (distZ > surfaceEpsilon)
+	{
+		float fadeLength = fadeEnd - fadeStart;
+
+		occlusion = saturate((fadeEnd - distZ) / fadeLength);
+	}
+
+	return occlusion;
+}
+
+// float3 p = (depth / position.z) * position;
+// float3 randomVec = 2.0f * gRandomVectorMap.SampleLevel(gsamLinearWrap, 4.0f * uv, 0.0f).rgb - 1.0f;
+float SSAO(float4 p, float rz, float4x4 uv, float3 n, float3 randomVec,
+		float4 offsetVectors[14], float radius, float fadeStart, float fadeEnd, float surfaceEpsilon)
+{
+	float sumOcclusion = 0.0f;
+	for (int i = 0; i < 14; ++i)
+	{
+		float3	offset = reflect(offsetVectors[i].xyz, randomVec);
+		float	flip = sign(dot(offset, n));
+		float3	q = p + flip * radius * offset;
+		float4	qProjection = mul(float4(q, 1.0f), uv);
+		qProjection /= qProjection.w;
+
+		float3 r  = (rz / q.z) * q;
+
+		float distZ = p.z - r.z;
+		float dp = max(dot(n, normalize(r - p)), 0.0f);
+		float occlusion = dp * GetOcclusion(fadeStart, fadeEnd, distZ, surfaceEpsilon);
+
+		sumOcclusion += occlusion;
+	}
+
+	sumOcclusion /= 14;
+
+	float access = 1.0f - sumOcclusion;
+
+	return saturate(pow(access, 6.0f));
 }
 
 float SchlickFresnel(float R0, float3 normal, float3 toLight)
@@ -58,6 +116,8 @@ float3 BlinnPhong(float3 lightStrength, float3 toLight, float3 toEye, Material m
 
 	return specular * lightStrength;
 }
+
+
 
 LightColor ComputeDirectionalLight(Light lgt, Material mat, float3 toEye)
 {

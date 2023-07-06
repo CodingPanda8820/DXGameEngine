@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Light.h"
+#include "EngineMath.h"
 #include "ResourceManager.h"
 
 Light::Light()
@@ -230,6 +231,9 @@ void Light::UpdateLightMaterial(OBJECT_RENDER_TYPE type)
 	XMVECTOR xformProjectionDeterminant = XMMatrixDeterminant(XMLoadFloat4x4(&xformProjection));
 	XMMATRIX xformProjectionInverse = XMMatrixInverse(&xformProjectionDeterminant, XMLoadFloat4x4(&xformProjection));
 	XMStoreFloat4x4(&material->GetUserDataMatrix(2), xformProjectionInverse);
+
+	//XMFLOAT4 distributionVectors = Get
+	EngineMath::GetDistributionVectors(material->GetUserDataFloat4sStart());
 }
 
 void Light::UpdateAttributes()

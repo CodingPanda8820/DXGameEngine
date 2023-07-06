@@ -141,6 +141,11 @@ XMFLOAT4X4 Material::GetUserDataMatrix(uint8 index)
 	return m_userDataMatrix[index];
 }
 
+XMFLOAT4* Material::GetUserDataFloat4sStart()
+{
+	return m_userDataFloat4s;
+}
+
 void Material::UpdateAttributes()
 {
 	CBMaterial attributes;
@@ -168,6 +173,8 @@ void Material::UpdateAttributes()
 	XMStoreFloat4x4(&attributes.UserDataMatrix_1, XMMatrixTranspose(XMLoadFloat4x4(&m_userDataMatrix[1])));
 	XMStoreFloat4x4(&attributes.UserDataMatrix_2, XMMatrixTranspose(XMLoadFloat4x4(&m_userDataMatrix[2])));
 	XMStoreFloat4x4(&attributes.UserDataMatrix_3, XMMatrixTranspose(XMLoadFloat4x4(&m_userDataMatrix[3])));
+
+	copy(&m_userDataFloat4s[0], &m_userDataFloat4s[16], &attributes.UserDataFloat4s[0]);
 
 	m_attributes->CopyData(0, attributes);
 }

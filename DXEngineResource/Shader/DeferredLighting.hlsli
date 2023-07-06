@@ -15,8 +15,9 @@ struct VertexIn
 
 struct VertexOut
 {
-	float4 position : SV_Position;
-	float2 uv		: TEXCOORD;
+	float4 position		: SV_Position;
+	float3 positionV	: POSITION;
+	float2 uv			: TEXCOORD;
 };
 
 struct PixelOut
@@ -37,7 +38,12 @@ static const float2 BasePosition[4] =
 VertexOut VS_DirectionalLight(uint VertexID : SV_VertexID)
 {
 	VertexOut vout = (VertexOut)0;
+	//	NDC Space
 	vout.position = float4(BasePosition[VertexID].xy, 0.0f, 1.0f);
+
+	//	View Space Near Plane
+	float4 ph = mul(vout.position, gProjectionInv);
+	vout.positionV = ph.xyz / ph.w;
 
 	//	Flip UV.y
 	vout.uv = mul(BasePosition[VertexID].xy, 0.5) + 0.5;
@@ -53,7 +59,7 @@ PixelOut PS_DirectionalLight(VertexOut pin)
 	material.Diffuse	= gDiffuseTexture2D.Sample(gsamLinearClamp, pin.uv).xyz;
 	material.Specular	= gDiffuseTexture2D.Sample(gsamLinearClamp, pin.uv).w;
 	material.Shininess	= gSpecularTexture2D.Sample(gsamLinearClamp, pin.uv).w;
-	material.Normal		= gSpecularTexture2D.Sample(gsamLinearClamp, pin.uv).xyz;
+	material.Normal		= (2.0f * gSpecularTexture2D.Sample(gsamLinearClamp, pin.uv).xyz) - 1.0f;
 
 	if (length(material.Diffuse) == 0.0f)
 		clip(-1);
@@ -124,7 +130,7 @@ float4 PS_AmbientLight(VertexOut pin) : SV_Target
 	float4 strength = float4(gLights[gUserDataInt_0].Strength, 0.0f);
 	float4 diffuseAlbedo = float4(gDiffuseTexture2D.Sample(gsamPointWrap, pin.uv).xyz, 1.0f);
 
-	float4 ambientLight = diffuseAlbedo * strength;
+	float4 ambientLight = float4(diffuseAlbedo.xyz * strength, 1.0f);
 	float4 diffuseLight = gSpecularTexture2D.Sample(gsamPointWrap, pin.uv);
 	float4 SpecularLight = gShininessTexture2D.Sample(gsamPointWrap, pin.uv);
 

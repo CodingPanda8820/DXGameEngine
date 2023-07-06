@@ -47,6 +47,7 @@ public:
 	uint32		GetUserDataInt(uint8 index);
 	float		GetUserDataFloat(uint8 index);
 	XMFLOAT4X4	GetUserDataMatrix(uint8 index);
+	XMFLOAT4*	GetUserDataFloat4sStart();
 
 public:
 	unique_ptr<UploadBuffer<CBMaterial>> m_attributes;
@@ -71,6 +72,8 @@ private:
 	int32		m_userDataInt[MAX_USER_DATA_INT] = { 0 };
 	float		m_userDataFloat[MAX_USER_DATA_FLOAT] = { 0.0f };
 	XMFLOAT4X4	m_userDataMatrix[MAX_USER_DATA_MATRIX] = {};
+
+	XMFLOAT4	m_userDataFloat4s[LENGHT_USER_DATA_FLOAT4S] = {};
 
 private:
 	ComPtr<ID3D12DescriptorHeap> m_descriptorHeap;

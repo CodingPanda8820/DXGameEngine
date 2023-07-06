@@ -97,6 +97,7 @@ void Shader::CreatePSO(SHADER_TYPE type)
 		psoDesc.RTVFormats[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
 		psoDesc.RTVFormats[1] = DXGI_FORMAT_R32G32B32A32_FLOAT;
 		psoDesc.RTVFormats[2] = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		psoDesc.RTVFormats[3] = DXGI_FORMAT_R32G32B32A32_FLOAT;
 		break;
 	case SHADER_TYPE::FORWARD:
 		psoDesc.NumRenderTargets = 1;

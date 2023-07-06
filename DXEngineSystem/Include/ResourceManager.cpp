@@ -23,6 +23,10 @@ bool ResourceManager::Init()
 	LoadTextureFile("TX_WoodBox", L"..\\..\\DXEngineResource\\Texture\\Box.jpg");
 	LoadTextureFile("TX_SkyDome", L"..\\..\\DXEngineResource\\Texture\\SkyDome.jpg");
 	LoadTextureFile("TX_CheckerBoard", L"..\\..\\DXEngineResource\\Texture\\CheckerBoard\\CheckerBoard_Type01_1k.png");
+	LoadTextureFile("TX_Bricks_diff", L"..\\..\\DXEngineResource\\Texture\\bricks.dds");
+	LoadTextureFile("TX_Bricks_norm", L"..\\..\\DXEngineResource\\Texture\\bricks_nmap.dds");
+	LoadTextureFile("TX_Tile_diff", L"..\\..\\DXEngineResource\\Texture\\tile.dds");
+	LoadTextureFile("TX_Tile_norm", L"..\\..\\DXEngineResource\\Texture\\tile_nmap.dds");
 #pragma endregion
 
 #pragma region FBX File
@@ -61,20 +65,27 @@ bool ResourceManager::Init()
 
 	shaderInfo =
 	{
+		SHADER_TYPE::SHADOW,
+		RASTERIZER_TYPE::CULL_BACK,
+		DEPTH_STENCIL_TYPE::LESS,
+	};
+
+	NewShader("SHD_Shadow");
+	m_shaders["SHD_Shadow"]->AppendInputElement("POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, 0, 0);
+	m_shaders["SHD_Shadow"]->AppendInputElement("NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, 0, 0);
+	m_shaders["SHD_Shadow"]->AppendInputElement("TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 24, 0, 0);
+	m_shaders["SHD_Shadow"]->AppendInputElement("TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 36, 0, 0);
+	m_shaders["SHD_Shadow"]->LoadShaderByteCode(L"..\\..\\DXEngineResource\\Shader\\DeferredShadow.hlsli", "VS_Main", SHADER_CODE_TYPE::VS);
+	m_shaders["SHD_Shadow"]->LoadShaderByteCode(L"..\\..\\DXEngineResource\\Shader\\DeferredShadow.hlsli", "PS_Main", SHADER_CODE_TYPE::PS);
+	m_shaders["SHD_Shadow"]->Create("SHD_Shadow", shaderInfo);
+
+	shaderInfo =
+	{
 		SHADER_TYPE::LIGHTING,
 		RASTERIZER_TYPE::CULL_NONE,
 		DEPTH_STENCIL_TYPE::DEPTH_UNABLE_NOT_WRITE,
 		BLEND_TYPE::ADD
 	};
-
-	NewShader("SHD_AmbientLight");
-	m_shaders["SHD_AmbientLight"]->AppendInputElement("POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, 0, 0);
-	m_shaders["SHD_AmbientLight"]->AppendInputElement("NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, 0, 0);
-	m_shaders["SHD_AmbientLight"]->AppendInputElement("TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 24, 0, 0);
-	m_shaders["SHD_AmbientLight"]->AppendInputElement("TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 36, 0, 0);
-	m_shaders["SHD_AmbientLight"]->LoadShaderByteCode(L"..\\..\\DXEngineResource\\Shader\\DeferredLighting.hlsli", "VS_AmbientLight", SHADER_CODE_TYPE::VS);
-	m_shaders["SHD_AmbientLight"]->LoadShaderByteCode(L"..\\..\\DXEngineResource\\Shader\\DeferredLighting.hlsli", "PS_AmbientLight", SHADER_CODE_TYPE::PS);
-	m_shaders["SHD_AmbientLight"]->Create("SHD_AmbientLight", shaderInfo);
 
 	NewShader("SHD_DirectionalLight");
 	m_shaders["SHD_DirectionalLight"]->AppendInputElement("POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, 0, 0);
@@ -105,19 +116,19 @@ bool ResourceManager::Init()
 
 	shaderInfo =
 	{
-		SHADER_TYPE::SHADOW,
-		RASTERIZER_TYPE::CULL_BACK,
-		DEPTH_STENCIL_TYPE::LESS,
+		SHADER_TYPE::LIGHTING,
+		RASTERIZER_TYPE::CULL_NONE,
+		DEPTH_STENCIL_TYPE::DEPTH_UNABLE_NOT_WRITE
 	};
 
-	NewShader("SHD_Shadow");
-	m_shaders["SHD_Shadow"]->AppendInputElement("POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, 0, 0);
-	m_shaders["SHD_Shadow"]->AppendInputElement("NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, 0, 0);
-	m_shaders["SHD_Shadow"]->AppendInputElement("TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 24, 0, 0);
-	m_shaders["SHD_Shadow"]->AppendInputElement("TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 36, 0, 0);
-	m_shaders["SHD_Shadow"]->LoadShaderByteCode(L"..\\..\\DXEngineResource\\Shader\\DeferredShadow.hlsli", "VS_Main", SHADER_CODE_TYPE::VS);
-	m_shaders["SHD_Shadow"]->LoadShaderByteCode(L"..\\..\\DXEngineResource\\Shader\\DeferredShadow.hlsli", "PS_Main", SHADER_CODE_TYPE::PS);
-	m_shaders["SHD_Shadow"]->Create("SHD_Shadow", shaderInfo);
+	NewShader("SHD_AmbientLight");
+	m_shaders["SHD_AmbientLight"]->AppendInputElement("POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, 0, 0);
+	m_shaders["SHD_AmbientLight"]->AppendInputElement("NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, 0, 0);
+	m_shaders["SHD_AmbientLight"]->AppendInputElement("TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 24, 0, 0);
+	m_shaders["SHD_AmbientLight"]->AppendInputElement("TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 36, 0, 0);
+	m_shaders["SHD_AmbientLight"]->LoadShaderByteCode(L"..\\..\\DXEngineResource\\Shader\\DeferredLighting.hlsli", "VS_AmbientLight", SHADER_CODE_TYPE::VS);
+	m_shaders["SHD_AmbientLight"]->LoadShaderByteCode(L"..\\..\\DXEngineResource\\Shader\\DeferredLighting.hlsli", "PS_AmbientLight", SHADER_CODE_TYPE::PS);
+	m_shaders["SHD_AmbientLight"]->Create("SHD_AmbientLight", shaderInfo);
 
 	shaderInfo =
 	{
@@ -164,6 +175,8 @@ bool ResourceManager::Init()
 	m_materials["MAT_CheckerBoard"]->SetSpecular(0.0f, 0.0f, 0.0f);
 	m_materials["MAT_CheckerBoard"]->SetTexture(TREGISTER_TYPE::DIFFUSE_TEXTURE2D, m_textures["TX_CheckerBoard"]);
 
+	//	MAT Deferred Geometry *
+#pragma region
 	NewMaterial("MAT_Deferred_Geometry_0");
 	m_materials["MAT_Deferred_Geometry_0"]->SetAmbient(0.0f, 0.0f, 0.0f, 0.0f);
 	m_materials["MAT_Deferred_Geometry_0"]->SetDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
@@ -199,6 +212,13 @@ bool ResourceManager::Init()
 	m_materials["MAT_Deferred_Geometry_5"]->SetDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
 	m_materials["MAT_Deferred_Geometry_5"]->SetShininess(0.0f);
 	m_materials["MAT_Deferred_Geometry_5"]->SetSpecular(0.0f, 0.0f, 0.0f);
+
+	NewMaterial("MAT_Deferred_Geometry_6");
+	m_materials["MAT_Deferred_Geometry_6"]->SetAmbient(0.0f, 0.0f, 0.0f, 0.0f);
+	m_materials["MAT_Deferred_Geometry_6"]->SetDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
+	m_materials["MAT_Deferred_Geometry_6"]->SetShininess(0.0f);
+	m_materials["MAT_Deferred_Geometry_6"]->SetSpecular(0.0f, 0.0f, 0.0f);
+#pragma endregion
 
 	NewMaterial("MAT_SkyDome");
 	m_materials["MAT_SkyDome"]->SetAmbient(0.0f, 0.0f, 0.0f, 0.0f);
@@ -257,6 +277,22 @@ bool ResourceManager::Init()
 	m_materials["MAT_WoodBox"]->SetSpecular(0.7f, 0.7f, 0.7f);
 	m_materials["MAT_WoodBox"]->SetTexture(TREGISTER_TYPE::DIFFUSE_TEXTURE2D, m_textures["TX_WoodBox"]);
 
+	NewMaterial("MAT_Sphere");
+	m_materials["MAT_Sphere"]->SetAmbient(0.0f, 0.0f, 0.0f, 0.0f);
+	m_materials["MAT_Sphere"]->SetDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
+	m_materials["MAT_Sphere"]->SetShininess(0.2f);
+	m_materials["MAT_Sphere"]->SetSpecular(0.7f, 0.7f, 0.7f);
+	m_materials["MAT_Sphere"]->SetTexture(TREGISTER_TYPE::DIFFUSE_TEXTURE2D, m_textures["TX_Bricks_diff"]);
+	m_materials["MAT_Sphere"]->SetTexture(TREGISTER_TYPE::NORMAL_TEXTURE2D, m_textures["TX_Bricks_norm"]);
+
+	NewMaterial("MAT_TileGrid");
+	m_materials["MAT_TileGrid"]->SetAmbient(0.0f, 0.0f, 0.0f, 0.0f);
+	m_materials["MAT_TileGrid"]->SetDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
+	m_materials["MAT_TileGrid"]->SetShininess(0.17f);
+	m_materials["MAT_TileGrid"]->SetSpecular(0.25f, 0.25f, 0.25f);
+	m_materials["MAT_TileGrid"]->SetTexture(TREGISTER_TYPE::DIFFUSE_TEXTURE2D, m_textures["TX_Tile_diff"]);
+	m_materials["MAT_TileGrid"]->SetTexture(TREGISTER_TYPE::NORMAL_TEXTURE2D, m_textures["TX_Tile_norm"]);
+
 	NewMaterial("MAT_Grid");
 	m_materials["MAT_Grid"]->SetAmbient(0.0f, 0.0f, 0.0f, 0.0f);
 	m_materials["MAT_Grid"]->SetDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
@@ -276,6 +312,8 @@ bool ResourceManager::Init()
 	m_polySurfaces["EngineWindow"]->SetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	m_polySurfaces["EngineWindow"]->Commit();
 
+	//	PLY Deferred PolySurface *
+#pragma region
 	NewPolySurface("PLY_Deferred_Polysurface_0");
 	m_polySurfaces["PLY_Deferred_Polysurface_0"]->CreateGrid(EngineWidth, EngineHeight, 2, 2);
 	m_polySurfaces["PLY_Deferred_Polysurface_0"]->SetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -305,6 +343,12 @@ bool ResourceManager::Init()
 	m_polySurfaces["PLY_Deferred_Polysurface_5"]->CreateGrid(EngineWidth, EngineHeight, 2, 2);
 	m_polySurfaces["PLY_Deferred_Polysurface_5"]->SetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	m_polySurfaces["PLY_Deferred_Polysurface_5"]->Commit();
+
+	NewPolySurface("PLY_Deferred_Polysurface_6");
+	m_polySurfaces["PLY_Deferred_Polysurface_6"]->CreateGrid(EngineWidth, EngineHeight, 2, 2);
+	m_polySurfaces["PLY_Deferred_Polysurface_6"]->SetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	m_polySurfaces["PLY_Deferred_Polysurface_6"]->Commit();
+#pragma endregion
 
 	NewPolySurface("UIBaseShape");
 	m_polySurfaces["UIBaseShape"]->CreateGrid(256, 256, 2, 2, "MAT_CheckerBoard");

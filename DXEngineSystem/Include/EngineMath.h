@@ -69,6 +69,70 @@ public:
 		return I;
 	}
 
+	static void GetDistributionVectors(XMFLOAT4* vectors)
+	{
+		XMFLOAT4 vecs[14] = {};
+
+		//	cube corners
+		vecs[0]  = XMFLOAT4(+1.0f, +1.0f, +1.0f, 0.0f);
+		vecs[1]  = XMFLOAT4(-1.0f, -1.0f, -1.0f, 0.0f);
+
+		vecs[2]  = XMFLOAT4(-1.0f, +1.0f, +1.0f, 0.0f);
+		vecs[3]  = XMFLOAT4(+1.0f, -1.0f, -1.0f, 0.0f);
+
+		vecs[4]  = XMFLOAT4(+1.0f, +1.0f, -1.0f, 0.0f);
+		vecs[5]  = XMFLOAT4(-1.0f, -1.0f, +1.0f, 0.0f);
+
+		vecs[6]  = XMFLOAT4(-1.0f, +1.0f, -1.0f, 0.0f);
+		vecs[7]  = XMFLOAT4(+1.0f, -1.0f, +1.0f, 0.0f);
+
+		//	center of faces
+		vecs[8]  = XMFLOAT4(-1.0f, +1.0f, -1.0f, 0.0f);
+		vecs[9]  = XMFLOAT4(+1.0f, -1.0f, +1.0f, 0.0f);
+
+		vecs[10] = XMFLOAT4(-1.0f, +1.0f, -1.0f, 0.0f);
+		vecs[11] = XMFLOAT4(+1.0f, -1.0f, +1.0f, 0.0f);
+
+		vecs[12] = XMFLOAT4(-1.0f, +1.0f, -1.0f, 0.0f);
+		vecs[13] = XMFLOAT4(+1.0f, -1.0f, +1.0f, 0.0f);
+
+		for (int i = 0; i < 14; ++i)
+		{
+			float s = RandF(0.25f, 1.0f);
+
+			XMVECTOR v = s * XMVector4Normalize(XMLoadFloat4(&vecs[i]));
+
+			XMStoreFloat4(&vectors[i], v);
+		}
+	}
+
+	static vector<float> GetGaussWeights(float sigma)
+	{
+		float powSigma = 2.0f * sigma * sigma;
+
+		int blurRadius = (int)ceil(2.0f * sigma);
+		assert(blurRadius <= 5); // MaxBlurRadius = 5
+
+		vector<float> weights;
+		weights.resize(2 * blurRadius + 1);
+
+		float weightSum = 0.0f;
+
+		for (int i = -blurRadius; i <= blurRadius; ++i)
+		{
+			float x = (float)i;
+			weights[i + blurRadius] = expf(-x * x / powSigma);
+			weightSum += weights[i + blurRadius];
+		}
+
+		for (int i = 0; i < weights.size(); ++i)
+		{
+			weights[i] /= weightSum;
+		}
+
+		return weights;
+	}
+
 	static float AngleFromXY(float x, float y);
 
 	static XMVECTOR RandUnitVec3();

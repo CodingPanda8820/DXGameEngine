@@ -14,8 +14,8 @@ public:
 	virtual void PostUpdate();
 
 private:
-	virtual void RenderObject();
-	virtual void RenderShadow();
+	void RenderObject();
+	void RenderShadow();
 
 public:
 	void SetVisibility(RENDER_LAYER layer, bool state);

@@ -25,9 +25,10 @@ struct CBGameObject
 	XMFLOAT4X4 World = EngineMath::Identity4x4();
 };
 
-#define MAX_USER_DATA_INT		4
-#define MAX_USER_DATA_FLOAT		4
-#define MAX_USER_DATA_MATRIX	4
+#define MAX_USER_DATA_INT			 4
+#define MAX_USER_DATA_FLOAT			 4
+#define MAX_USER_DATA_MATRIX		 4
+#define LENGHT_USER_DATA_FLOAT4S	16
 struct CBMaterial
 {
 	XMFLOAT4 Diffuse = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -54,6 +55,8 @@ struct CBMaterial
 	XMFLOAT4X4 UserDataMatrix_1 = EngineMath::Identity4x4();
 	XMFLOAT4X4 UserDataMatrix_2 = EngineMath::Identity4x4();
 	XMFLOAT4X4 UserDataMatrix_3 = EngineMath::Identity4x4();
+
+	XMFLOAT4	UserDataFloat4s[LENGHT_USER_DATA_FLOAT4S] = {};
 };
 
 struct CBLight

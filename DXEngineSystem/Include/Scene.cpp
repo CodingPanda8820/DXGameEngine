@@ -76,19 +76,20 @@ void Scene::Render(const float& deltaTime)
 
 	EngineSystem::GetInst()->GetMultiRenderTarget(RENDER_TARGET_TYPE::LIGHTING)->WaitSync(cmdList, WAIT_SYNC_TYPE::RENDER_TARGET_TO_RESOURCE);
 	EngineSystem::GetInst()->GetMultiRenderTarget(RENDER_TARGET_TYPE::SWAP_CHAIN)->OMSetRenderTarget(cmdList, 1, currentBackBufferIndex);
+
+	//	Forward Rendering
+	for (vector<shared_ptr<Geometry>> renderLayer : m_renderLayers_forward)
+	{
+		for (shared_ptr<Geometry> geometry : renderLayer)
+		{
+			geometry->Render();
+		}
+	}
+
 	for (auto light : m_lightGroup->GetLights(LIGHT_TYPE::AMBIENT))
 	{
 		light->Render();
 	}
-
-	//	Forward Rendering
-	//for (vector<shared_ptr<Geometry>> renderLayer : m_renderLayers_forward)
-	//{
-	//	for (shared_ptr<Geometry> geometry : renderLayer)
-	//	{
-	//		geometry->Render();
-	//	}
-	//}
 
 	m_camera_gameUI->Update();
 	m_camera_gameUI->Render();
@@ -108,10 +109,8 @@ void Scene::InitCamera()
 #pragma region Camera
 	m_cameras["Main"] = make_shared<Camera>(PROJECTION_TYPE::PERSPECTIVE);
 	m_cameras["Main"]->Init();
-	//m_cameras["Main"]->GetTransform()->SetTranslate(0.0f, 30.0f, 0.0f);
-	m_cameras["Main"]->GetTransform()->SetTranslate(0.0f, 0.0f, -40.0f);
-	//m_cameras["Main"]->GetTransform()->SetRotate(90.0f, 0.0f, 0.0f);
-	m_cameras["Main"]->GetTransform()->SetRotate(0.0f, 0.0f, 0.0f);
+	m_cameras["Main"]->GetTransform()->SetTranslate(22.5f, 6.0f, -12.5f);
+	m_cameras["Main"]->GetTransform()->SetRotate(2.5f, -60.0f, 0.0f);
 
 	m_cameras["UICamera"] = make_shared<Camera>(PROJECTION_TYPE::ORTHOGONAL);
 	m_cameras["UICamera"]->Init();
@@ -127,9 +126,9 @@ void Scene::InitLightGroup()
 	m_lightGroup->GetLight("Ambient")->SetStrength(0.5f, 0.5f, 0.5f);
 	m_lightGroup->AddLight("Directional", LIGHT_TYPE::DIRECTIONAL);
 	m_lightGroup->GetLight("Directional")->SetMaterial("MAT_Shadow", OBJECT_RENDER_TYPE::SHADOW);
-	m_lightGroup->GetLight("Directional")->SetStrength(0.48f, 0.48f, 0.48f);
-	m_lightGroup->GetLight("Directional")->SetRotate(90.0f, 0.0f, 0.0f);
-	m_lightGroup->GetLight("Directional")->SetTranslate(0.0f, 50.0f, 0.0f);
+	m_lightGroup->GetLight("Directional")->SetStrength(1.2f, 1.2f, 1.2f);
+	m_lightGroup->GetLight("Directional")->SetRotate(90.0f, 0.0f, 60.0f);
+	m_lightGroup->GetLight("Directional")->SetTranslate(-60.0f, 35.0f, 0.0f);
 #pragma endregion
 }
 
@@ -150,25 +149,20 @@ void Scene::InitGameUI()
 		m_geometries[temp_name_geometries]->SetShader("SHD_GameUI");
 		m_geometries[temp_name_geometries]->AddPolySurface(temp_name_polysurface);
 		m_geometries[temp_name_geometries]->GetPolySurface(temp_name_polysurface)->SetMaterial(temp_name_material);
-		if (i < 3)
+		if (i < 4)
 		{
 			shared_ptr<Texture> tmpTexture = EngineSystem::GetInst()->GetMultiRenderTarget(RENDER_TARGET_TYPE::GBUFFER)->GetRenderTarget(i);
 			ResourceManager::GetInst()->FindMaterial(temp_name_material)->SetTexture(0, tmpTexture);
 		}
-		else if (i >= 3 && i < 5)
-		{
-			shared_ptr<Texture> tmpTexture = EngineSystem::GetInst()->GetMultiRenderTarget(RENDER_TARGET_TYPE::LIGHTING)->GetRenderTarget(i - 3);
-			ResourceManager::GetInst()->FindMaterial(temp_name_material)->SetTexture(0, tmpTexture);
-		}
 		else
 		{
-			shared_ptr<Texture> tmpTexture = EngineSystem::GetInst()->GetMultiRenderTarget(RENDER_TARGET_TYPE::SHADOW)->GetRenderTarget(i - 5);
+			shared_ptr<Texture> tmpTexture = EngineSystem::GetInst()->GetMultiRenderTarget(RENDER_TARGET_TYPE::LIGHTING)->GetRenderTarget(i - 4);
 			ResourceManager::GetInst()->FindMaterial(temp_name_material)->SetTexture(0, tmpTexture);
 		}
 
 		m_geometries[temp_name_geometries]->GetTransform()->SetRotate(-90.0f, 0.0f, 0.0f);
 		m_geometries[temp_name_geometries]->GetTransform()->SetScale(0.1f, 0.1f, 0.1f);
-		m_geometries[temp_name_geometries]->GetTransform()->SetTranslate(-550.0f + (140.0f * i), 300.0f, 500.0f);
+		m_geometries[temp_name_geometries]->GetTransform()->SetTranslate(550.0f, 250.0f - (90.0f * i), 500.0f);
 		m_renderLayers_gameUI.push_back(m_geometries[temp_name_geometries]);
 	}
 #pragma endregion
@@ -182,6 +176,7 @@ void Scene::InitGeometries()
 	m_geometries["SkyDome"]->SetShader("SHD_SkyDome");
 	m_geometries["SkyDome"]->SetMaterial("MAT_SkyDome");
 	m_geometries["SkyDome"]->AddPolySurface("SkyDome");
+	m_geometries["SkyDome"]->GetTransform()->SetScale(100000.0f, 100000.0f, 100000.0f);
 	m_renderLayers_forward[RENDER_LAYER_ID(RENDER_LAYER::SKYBOX)].push_back(m_geometries["SkyDome"]);
 
 	m_geometries["WoodBox_01"] = make_shared<Geometry>();
@@ -197,8 +192,8 @@ void Scene::InitGeometries()
 			ResourceManager::GetInst()->FindMaterial("MAT_WoodBox")->SetTexture(0, texture);
 		}
 	}
-	m_geometries["WoodBox_01"]->GetTransform()->SetTranslate(0.0f, 2.5f, 0.0f);
-	m_geometries["WoodBox_01"]->GetTransform()->SetScale(5.0f, 5.0f, 5.0f);
+	m_geometries["WoodBox_01"]->GetTransform()->SetTranslate(-5.0f, 3.5f, 10.0f);
+	m_geometries["WoodBox_01"]->GetTransform()->SetScale(7.0f, 7.0f, 7.0f);
 	m_renderLayers_deferred[RENDER_LAYER_ID(RENDER_LAYER::SRGB)].push_back(m_geometries["WoodBox_01"]);
 
 	m_geometries["WoodBox_02"] = make_shared<Geometry>();
@@ -214,9 +209,24 @@ void Scene::InitGeometries()
 			ResourceManager::GetInst()->FindMaterial("MAT_WoodBox")->SetTexture(0, texture);
 		}
 	}
-	m_geometries["WoodBox_02"]->GetTransform()->SetTranslate(7.5f, 2.5f, 0.0f);
+	m_geometries["WoodBox_02"]->GetTransform()->SetTranslate(7.5f, 2.5f, 1.0f);
 	m_geometries["WoodBox_02"]->GetTransform()->SetScale(5.0f, 5.0f, 5.0f);
+	m_geometries["WoodBox_02"]->GetTransform()->SetRotate(0.0f, 25.0f, 0.0f);
 	m_renderLayers_deferred[RENDER_LAYER_ID(RENDER_LAYER::SRGB)].push_back(m_geometries["WoodBox_02"]);
+
+	m_geometries["Sphere_0"] = make_shared<Geometry>();
+	m_geometries["Sphere_0"]->Init();
+	m_geometries["Sphere_0"]->SetShader("SHD_SurfaceShader", OBJECT_RENDER_TYPE::OBJECT);
+	m_geometries["Sphere_0"]->SetShader("SHD_Shadow", OBJECT_RENDER_TYPE::SHADOW);
+	m_geometries["Sphere_0"]->SetMaterial("MAT_Shadow", OBJECT_RENDER_TYPE::SHADOW);
+	m_geometries["Sphere_0"]->AddPolySurface("Sphere");
+	m_geometries["Sphere_0"]->GetTransform()->SetTranslate(0.0f, 2.5f, 0.0f);
+	m_geometries["Sphere_0"]->GetTransform()->SetScale(2.5f, 2.5f, 2.5f);
+	m_geometries["Sphere_0"]->GetTransform()->SetRotate(0.0f, 180.0f, 0.0f);
+	{
+		m_geometries["Sphere_0"]->GetPolySurface("Sphere")->SetMaterial("MAT_Sphere");
+	}
+	m_renderLayers_deferred[RENDER_LAYER_ID(RENDER_LAYER::SRGB)].push_back(m_geometries["Sphere_0"]);
 
 	m_geometries["Grid"] = make_shared<Geometry>();
 	m_geometries["Grid"]->Init();
@@ -225,14 +235,10 @@ void Scene::InitGeometries()
 	m_geometries["Grid"]->SetMaterial("MAT_Shadow", OBJECT_RENDER_TYPE::SHADOW);
 	m_geometries["Grid"]->AddPolySurface("Grid");
 	{
-		m_geometries["Grid"]->GetPolySurface("Grid")->SetMaterial("MAT_Grid");
-		{
-			shared_ptr<Texture> texture = ResourceManager::GetInst()->FindTexture("TX_CheckerBoard");
-			ResourceManager::GetInst()->FindMaterial("MAT_Grid")->SetTexture(0, texture);
-		}
+		m_geometries["Grid"]->GetPolySurface("Grid")->SetMaterial("MAT_TileGrid");
 	}
 	m_geometries["Grid"]->GetTransform()->SetTranslate(0.0f, 0.0f, 0.0f);
-	m_geometries["Grid"]->GetTransform()->SetScale(5.0f, 5.0f, 5.0f);
+	m_geometries["Grid"]->GetTransform()->SetScale(4.0f, 4.0f, 4.0f);
 	m_renderLayers_deferred[RENDER_LAYER_ID(RENDER_LAYER::SRGB)].push_back(m_geometries["Grid"]);
 #pragma endregion
 }
